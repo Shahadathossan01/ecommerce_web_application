@@ -1,0 +1,4232 @@
+openapi: 3.0.0
+info:
+  version: "1.0.0"
+  title: "Ecommerze Application API"
+  description: "This is an Ecommerze Application API"
+  contact:
+    name: Sahadat Hosen Developer
+    url: https://SahadatHosen.com
+    email: sahadathosen.dev@gmail.com
+servers:
+  - description: Dev
+    url: "http://localhost:4000/api/v1"
+tags:
+  - name: Auth
+    description: Authentication Endpoints (public)
+  - name: Category
+    description: Category Endpoints (public + private)
+  - name: Product
+    description: Product Endpoints (public + private)
+  - name: Product_Variant
+    description: Product_Variant Endpoints (public + private)
+  - name: Review
+    description: Product_Variant Endpoints (public + private)
+  - name: Coupon
+    description: Coupon Endpoints (public + private)
+  - name: Media
+    description: Media Endpoints (private)
+  - name: Order
+    description: Order Endpoints (public + private)
+  - name: Cart
+    description: Cart Endpoints (public + private)
+  - name: Shipping_Address
+    description: Shipping_Address Endpoints (public + private)
+  - name: User
+    description: User Endpoints (private)
+paths:
+  "/auth/register":
+    post:
+      description: create a new account
+      tags: [Auth]
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: sahadat hosen
+                credential:
+                  type: string
+                  format: email
+                  example: hossantopu@gmail.com
+                password:
+                  type: string
+                  format: password
+                  example: pass1111
+              required: [username, credential, password]
+      responses:
+        "201":
+          description: Registration received. Please check your email for the verification OTP.
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 201
+                  message:
+                    type: string
+                    example: Registration received. Please check your email for the verification OTP.
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: "/auth/register"
+                      verifyRegisterOtp:
+                        type: string
+                        example: "/auth/verifyRegisterOtp"
+        "400":
+          $ref: "#/components/responses/400"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          "$ref": "#/components/responses/500"
+  "/auth/verifyRegisterOtp":
+    post:
+      description: Verify Account with otp
+      tags: [Auth]
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              type: object
+              properties:
+                credential:
+                  type: string
+                  format: email
+                  example: hossantopu@gmail.com
+                otp:
+                  type: string
+                  example: 123456
+              required: [username, otp]
+      responses:
+        "200":
+          description: Email verified successfully. You are now logged in.
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: Email verified successfully. You are now logged in.
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: "/auth/verifyRegisterOtp"
+                      login:
+                        type: string
+                        example: "/auth/login"
+        "400":
+          $ref: "#/components/responses/400"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          "$ref": "#/components/responses/500"
+  "/auth/login":
+    post:
+      description: Log in to existing account
+      tags: [Auth]
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              type: object
+              properties:
+                credential:
+                  type: string
+                  format: email
+                  example: hossantopu@gmail.com
+                password:
+                  type: string
+                  format: password
+                  example: pass1111
+              required: [credential, password]
+      responses:
+        "200":
+          description: Login Successfully.
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: Login successfully.
+                  data:
+                    type: object
+                    properties:
+                      access_token:
+                        type: string
+                        example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: "/auth/register"
+        "400":
+          $ref: "#/components/responses/400"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          "$ref": "#/components/responses/500"
+
+  "/auth/forgotPassword":
+    post:
+      description: Forgot Password with OTP.
+      tags: [Auth]
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              type: object
+              properties:
+                credential:
+                  type: string
+                  format: email
+                  example: hossantopu@gmail.com
+              required: [credential]
+      responses:
+        "200":
+          description: OTP sent to this credential.
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: OTP sent to this credential.
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: "/auth/forgotPassword"
+                      resendResetOtp:
+                        type: string
+                        example: "/auth/resendResetOtp"
+                      verifyResetOtp:
+                        type: string
+                        example: "/auth/verifyResetOtp"
+        "400":
+          $ref: "#/components/responses/400"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          "$ref": "#/components/responses/500"
+  "/auth/resendOtp":
+    post:
+      description: Resend new otp.
+      tags: [Auth]
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              type: object
+              properties:
+                credential:
+                  type: string
+                  format: email
+                  example: hossantopu@gmail.com
+              required: [credential]
+      responses:
+        "200":
+          description: New Otp sent this credential.
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: New Otp sent this credential.
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: "/auth/resendOtp"
+        "400":
+          $ref: "#/components/responses/400"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          "$ref": "#/components/responses/500"
+  "/auth/verifyResetOtp":
+    post:
+      description: Otp verified, now reset your password.
+      tags: [Auth]
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              type: object
+              properties:
+                credential:
+                  type: string
+                  format: email
+                  example: hossantopu@gmail.com
+                otp:
+                  type: string
+                  example: 123456
+              required: [credential]
+      responses:
+        "200":
+          description: Otp verified, now reset your password.
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: Otp verified, now reset your password.
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: "/auth/verifyResetOtp"
+                      resetPassword:
+                        type: string
+                        example: "/auth/resetPassword"
+        "400":
+          $ref: "#/components/responses/400"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          "$ref": "#/components/responses/500"
+  "/auth/resetPassword":
+    post:
+      description: Reset your password.
+      tags: [Auth]
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              type: object
+              properties:
+                credential:
+                  type: string
+                  format: email
+                  example: hossantopu@gmail.com
+                password:
+                  type: string
+                  format: password
+                  example: pass1111
+              required: [credential, password]
+      responses:
+        "200":
+          description: Password reset successfully. Please log in!
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: Password reset successfully. Please log in!
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: "/auth/resetPassword"
+                      login:
+                        type: string
+                        example: "/auth/login"
+        "400":
+          $ref: "#/components/responses/400"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          "$ref": "#/components/responses/500"
+
+  "/categories":
+    post:
+      operationId: create Category
+      security:
+        - bearerAuth: []
+      tags: [Category]
+      description: Create a new Category
+      requestBody:
+        description: To create a new Category user must need to provide valid data
+        content:
+          "application/json":
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: T-Shirt
+              required:
+                - name
+      responses:
+        "201":
+          description: category created successfully.
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 201
+                  message:
+                    type: string
+                    example: category created successfully.
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id:
+                            type: integer
+                            format: int32
+                            example: 64fa38cce9a2d7f123456789
+                          name:
+                            type: string
+                            example: T-Shirt
+                        required: [id, name]
+                      - $ref: "#/components/schemas/Timestamp"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: "/categories/64fa38cce9a2d7f123456789"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+    get:
+      tags: [Category]
+      description: Retrive all published articles
+      parameters:
+        - $ref: "#/components/parameters/pageParam"
+        - $ref: "#/components/parameters/limitParam"
+        - $ref: "#/components/parameters/sortTypeParam"
+        - $ref: "#/components/parameters/sortByParam"
+        - $ref: "#/components/parameters/searchParam"
+      responses:
+        "200":
+          description: Return a list of categories
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          properties:
+                            id:
+                              type: string
+                              example: 64fa38cce9a2d7f123456789
+                            name:
+                              type: string
+                              example: T-Shirt
+                            links:
+                              type: object
+                              properties:
+                                self:
+                                  type: string
+                                  format: uri
+                                  example: /categories/64fa38cce9a2d7f123456789
+                          required: [id, name]
+                        - $ref: "#/components/schemas/Timestamp"
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: "/categories?page=2&limit=10"
+                      next:
+                        type: string
+                        format: url
+                        example: "/categories?page=3&limit=10"
+                      prev:
+                        type: string
+                        format: url
+                        example: "/categories?page=1&limit=10"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          "$ref": "#/components/responses/500"
+  "/categories/{id}":
+    patch:
+      security:
+        - bearerAuth: []
+      tags: [Category]
+      description: Partially update an category
+      parameters:
+        - $ref: "#/components/parameters/idPathParam"
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Huddies
+      responses:
+        "200":
+          description: "Successfully Updated"
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 201
+                  message:
+                    type: string
+                    example: category created successfully.
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id:
+                            type: integer
+                            format: int32
+                            example: 64fa38cce9a2d7f123456789
+                          name:
+                            type: string
+                            example: T-Shirt
+                        required: [id, name]
+                      - $ref: "#/components/schemas/Timestamp"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: "/categories/64fa38cce9a2d7f123456789"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+    delete:
+      security:
+        - bearerAuth: []
+      tags: [Category]
+      description: Delete a category by id
+      parameters:
+        - $ref: "#/components/parameters/idPathParam"
+      responses:
+        "204":
+          description: "Category deleted successfully"
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 204
+                  message:
+                    type: string
+                    example: Category deleted successfully.
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+  "/categories/names":
+    get:
+      tags: [Category]
+      description: Retrive all published category_name
+      responses:
+        "200":
+          description: Return a list of category_name
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          properties:
+                            id:
+                              type: string
+                              example: 64fa38cce9a2d7f123456789
+                            name:
+                              type: string
+                              example: "T-Shirt"
+                          required: [id, name]
+                        - $ref: "#/components/schemas/Timestamp"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: "/categories/names"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          "$ref": "#/components/responses/500"
+
+  "/products":
+    post:
+      operationId: create product
+      security:
+        - bearerAuth: []
+      tags: [Product]
+      description: Create a new product
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                category_id:
+                  type: string
+                  example: "64fa38cce9a2d7f123456789"
+                name:
+                  type: string
+                  example: "T-Shirt"
+                mrp:
+                  type: number
+                  format: float
+                  example: 500
+                selling_price:
+                  type: number
+                  format: float
+                  example: 450
+                discount:
+                  type: number
+                  format: float
+                  example: 10
+                description:
+                  type: string
+                  example: "Comfortable cotton T-shirt"
+                image:
+                  type: string
+                  format: binary # 👈 indicates file upload
+              required:
+                - category_id
+                - name
+                - mrp
+                - selling_price
+                - description
+                - image
+
+      responses:
+        "201":
+          description: Product created successfully.
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 201
+                  message:
+                    type: string
+                    example: Product created successfully.
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id:
+                            type: string
+                            example: "64fa38cce9a2d7f123456789"
+                          category_id:
+                            type: string
+                            example: "64fa38cce9a2d7f123456780"
+                          name:
+                            type: string
+                            example: "T-Shirt"
+                          mrp:
+                            type: number
+                            format: float
+                            example: 500
+                          selling_price:
+                            type: number
+                            format: float
+                            example: 450
+                          discount:
+                            type: number
+                            format: float
+                            example: 10
+                          description:
+                            type: string
+                            example: "Comfortable cotton T-shirt"
+                          status:
+                            type: string
+                            enum: [active, inactive]
+                            example: active
+                          image:
+                            type: string
+                            format: url
+                            example: "https://cdn.com/products/tshirt.jpg"
+                      - $ref: "#/components/schemas/Timestamp"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: "/products"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+    get:
+      tags: [Product]
+      description: Retrive all published articles
+      parameters:
+        - $ref: "#/components/parameters/pageParam"
+        - $ref: "#/components/parameters/limitParam"
+        - $ref: "#/components/parameters/sortTypeParam"
+        - $ref: "#/components/parameters/sortByParam"
+        - $ref: "#/components/parameters/searchParam"
+        - $ref: "#/components/parameters/categoryParam"
+        - $ref: "#/components/parameters/colorParam"
+        - $ref: "#/components/parameters/sizeParam"
+        - $ref: "#/components/parameters/minPriceParam"
+        - $ref: "#/components/parameters/maxPriceParam"
+      responses:
+        "200":
+          description: Return a list of categories
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          properties:
+                            id:
+                              type: string
+                              example: 64fa38cce9a2d7f123456789
+                            category_id:
+                              type: string
+                              example: 64fa38cce9a2d7f123456789
+                            name:
+                              type: string
+                              example: "T-Shirt"
+                            mrp:
+                              type: number
+                              format: float
+                              example: 500
+                            selling_price:
+                              type: number
+                              format: float
+                              example: 450
+                            discount:
+                              type: number
+                              format: float
+                              example: 10
+                            description:
+                              type: string
+                              example: "Comfortable cotton T-shirt"
+                            status:
+                              type: string
+                              enum: [active, inactive]
+                              example: active
+                            image:
+                              type: string
+                              format: url
+                              example: "http://aws.com/product1.jpg"
+                            link:
+                              type: object
+                              properties:
+                                self:
+                                  type: string
+                                  format: url
+                                  example: "/products/64fa38cce9a2d7f123456789"
+                          required:
+                            [
+                              id,
+                              category_id,
+                              name,
+                              mrp,
+                              selling_price,
+                              status,
+                              image,
+                            ]
+                        - $ref: "#/components/schemas/Timestamp"
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: "/products?page=2&limit=10"
+                      next:
+                        type: string
+                        format: url
+                        example: "/products?page=3&limit=10"
+                      prev:
+                        type: string
+                        format: url
+                        example: "/products?page=1&limit=10"
+        "400":
+          $ref: "#/components/responses/400"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          "$ref": "#/components/responses/500"
+  "/products/{id}":
+    patch:
+      security:
+        - bearerAuth: []
+      tags: [Product]
+      description: Partially update an product
+      parameters:
+        - $ref: "#/components/parameters/idPathParam"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                category_id:
+                  type: string
+                  example: "64fa38cce9a2d7f123456789"
+                name:
+                  type: string
+                  example: "T-Shirt"
+                mrp:
+                  type: number
+                  format: float
+                  example: 500
+                selling_price:
+                  type: number
+                  format: float
+                  example: 450
+                discount:
+                  type: number
+                  format: float
+                  example: 10
+                description:
+                  type: string
+                  example: "Comfortable cotton T-shirt"
+                image:
+                  type: string
+                  format: binary
+                status:
+                  type: string
+                  enum:
+                    - active
+                    - inactive
+                  example: active
+
+      responses:
+        "201":
+          description: Product updated successfully.
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 201
+                  message:
+                    type: string
+                    example: Product updated successfully.
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id:
+                            type: string
+                            example: "64fa38cce9a2d7f123456789"
+                          category_id:
+                            type: string
+                            example: "64fa38cce9a2d7f123456780"
+                          name:
+                            type: string
+                            example: "T-Shirt"
+                          mrp:
+                            type: number
+                            format: float
+                            example: 500
+                          selling_price:
+                            type: number
+                            format: float
+                            example: 450
+                          discount:
+                            type: number
+                            format: float
+                            example: 10
+                          description:
+                            type: string
+                            example: "Comfortable cotton T-shirt"
+                          status:
+                            type: string
+                            enum: [active, inactive]
+                            example: active
+                          image:
+                            type: string
+                            format: url
+                            example: "https://cdn.com/products/tshirt.jpg"
+                      - $ref: "#/components/schemas/Timestamp"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: "/products"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+    delete:
+      security:
+        - bearerAuth: []
+      tags: [Product]
+      description: Delete a product by id
+      parameters:
+        - $ref: "#/components/parameters/idPathParam"
+      responses:
+        "204":
+          description: "Product deleted successfully"
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 204
+                  message:
+                    type: string
+                    example: Product deleted successfully.
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+    get:
+      tags: [Product]
+      description: Retrive all published articles
+      parameters:
+        - $ref: "#/components/parameters/idPathParam"
+        - $ref: "#/components/parameters/colorParam"
+        - $ref: "#/components/parameters/sizeParam"
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          properties:
+                            id:
+                              type: string
+                              example: "64fa38cce9a2d7f123456789"
+                            name:
+                              type: string
+                              example: "T-Shirt"
+                            mrp:
+                              type: number
+                              format: float
+                              example: 500
+                            selling_price:
+                              type: number
+                              format: float
+                              example: 450
+                            discount:
+                              type: number
+                              format: float
+                              example: 10
+                            description:
+                              type: string
+                              example: "Comfortable cotton T-shirt"
+                            variant:
+                              type: array
+                              items:
+                                allOf:
+                                  - type: object
+                                    properties:
+                                      id:
+                                        type: string
+                                        example: "64fa38cce9a2d7f987654321"
+                                      color:
+                                        type: string
+                                        example: "Red"
+                                      size:
+                                        type: string
+                                        example: "M"
+                                      images:
+                                        type: array
+                                        items:
+                                          type: string
+                                          format: url
+                                          example: "https://cdn.com/products/tshirt-red-front.jpg"
+                                  - $ref: "#/components/schemas/Timestamp"
+                            reviews_count:
+                              type: integer
+                              example: 15
+                            reviews_average:
+                              type: number
+                              format: float
+                              example: 4.3
+                            link:
+                              type: object
+                              properties:
+                                self:
+                                  type: string
+                                  format: uri
+                                  example: "/products/64fa38cce9a2d7f123456789"
+                                reviews:
+                                  type: string
+                                  format: uri
+                                  example: "/products/64fa38cce9a2d7f123456789/reviews"
+                        - $ref: "#/components/schemas/Timestamp"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          "$ref": "#/components/responses/500"
+  "/products/{id}/reviews":
+    post:
+      operationId: create product reviews
+      security:
+        - bearerAuth: []
+      tags: [Product]
+      description: Create a new product
+      parameters:
+        - $ref: "#/components/parameters/idPathParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: "Great T-Shirt!"
+                rating:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                  example: 5
+                review:
+                  type: string
+                  example: "Really comfortable and fits perfectly."
+              required:
+                - title
+                - rating
+                - review
+
+      responses:
+        201:
+          description: Review created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 201
+                  message:
+                    type: string
+                    example: "Review created successfully"
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id:
+                            type: string
+                            example: "64fa38cce9a2d7f123456789"
+                          product_id:
+                            type: string
+                            example: "650f1b2a1c23d7f001234567"
+                          user_id:
+                            type: string
+                            example: "64fa38cce9a2d7f001111111"
+                          title:
+                            type: string
+                            example: "Great T-Shirt!"
+                          rating:
+                            type: integer
+                            example: 5
+                          review:
+                            type: string
+                            example: "Really comfortable and fits perfectly."
+                          links:
+                            type: object
+                            properties:
+                              self:
+                                type: string
+                                format: uri
+                                example: "/reviews/64fa38cce9a2d7f123456789"
+                              product:
+                                type: string
+                                format: uri
+                                example: "/products/650f1b2a1c23d7f001234567"
+                      - $ref: "#/components/schemas/Timestamp"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+    get:
+      tags: [Product]
+      description: Retrive all published articles
+      parameters:
+        - $ref: "#/components/parameters/idPathParam"
+        - $ref: "#/components/parameters/pageParam"
+        - $ref: "#/components/parameters/limitParam"
+        - $ref: "#/components/parameters/sortTypeParam"
+        - $ref: "#/components/parameters/sortByParam"
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          properties:
+                            id:
+                              type: string
+                              example: "64fa38cce9a2d7f123456789"
+                            product_id:
+                              type: string
+                              example: "650f1b2a1c23d7f001234567"
+                            title:
+                              type: string
+                              example: "Great T-Shirt!"
+                            rating:
+                              type: integer
+                              example: 5
+                            review:
+                              type: string
+                              example: "Really comfortable and fits perfectly."
+                            reviews_count:
+                              type: integer
+                              example: 5
+                            ratingBreakdown:
+                              type: object
+                              properties:
+                                "5":
+                                  type: integer
+                                  example: 1
+                                "4":
+                                  type: integer
+                                  example: 3
+                                "3":
+                                  type: integer
+                                  example: 1
+                                "2":
+                                  type: integer
+                                  example: 0
+                                "1":
+                                  type: integer
+                                  example: 0
+                            reviews_average:
+                              type: number
+                              format: float
+                              example: 4.2
+                            user:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                                  example: "64fa38cce9a2d7f001111111"
+                                username:
+                                  type: string
+                                  example: "john_doe"
+                                avatar:
+                                  type: string
+                                  format: url
+                                  example: "https://cdn.com/avatar.jpg"
+                            links:
+                              type: object
+                              properties:
+                                self:
+                                  type: string
+                                  format: uri
+                                  example: "/reviews/64fa38cce9a2d7f123456789"
+                                product:
+                                  type: string
+                                  format: uri
+                                  example: "/products/650f1b2a1c23d7f001234567"
+                        - $ref: "#/components/schemas/Timestamp"
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: "/products/64fa38cce9a2d7f123456789/reviews?page=2&limit=10"
+                      next:
+                        type: string
+                        format: url
+                        example: "/products/64fa38cce9a2d7f123456789/reviews?page=3&limit=10"
+                      prev:
+                        type: string
+                        format: url
+                        example: "/products/64fa38cce9a2d7f123456789/reviews?page=1&limit=10"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          "$ref": "#/components/responses/500"
+
+  "/product_variants":
+    post:
+      operationId: create product variant
+      security:
+        - bearerAuth: []
+      tags: [Product_Variant]
+      description: Create a new product
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                product_id:
+                  type: string
+                  example: "64fa38cce9a2d7f123456789"
+                color:
+                  type: string
+                  example: "Red"
+                size:
+                  type: string
+                  example: "M"
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+              required:
+                - product_id
+                - color
+                - size
+                - images
+
+      responses:
+        "201":
+          description: Product variant created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 201
+                  message:
+                    type: string
+                    example: "Product variant created successfully"
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id:
+                            type: string
+                            example: "650f1b2a1c23d7f001234567"
+                          product_id:
+                            type: string
+                            example: "64fa38cce9a2d7f123456789"
+                          color:
+                            type: string
+                            example: "Red"
+                          size:
+                            type: string
+                            example: "M"
+                          status:
+                            type: string
+                            enum: [active, inactive]
+                            example: active
+                          images:
+                            type: array
+                            items:
+                              type: string
+                              format: url
+                              example: "https://cdn.com/products/tshirt-red-front.jpg"
+                      - $ref: "#/components/schemas/Timestamp"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: "/products_variant/650f1b2a1c23d7f001234567"
+                      product:
+                        type: string
+                        format: uri
+                        example: "/products/64fa38cce9a2d7f123456789"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+    get:
+      security:
+        - bearerAuth: []
+      tags: [Product_Variant]
+      description: Retrive all published articles
+      parameters:
+        - $ref: "#/components/parameters/pageParam"
+        - $ref: "#/components/parameters/limitParam"
+        - $ref: "#/components/parameters/sortTypeParam"
+        - $ref: "#/components/parameters/sortByParam"
+        - $ref: "#/components/parameters/searchParam"
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          properties:
+                            id:
+                              type: string
+                              example: "650f1b2a1c23d7f001234567"
+                            product_id:
+                              type: string
+                              example: "64fa38cce9a2d7f123456789"
+                            color:
+                              type: string
+                              example: "Red"
+                            size:
+                              type: string
+                              example: "M"
+                            status:
+                              type: string
+                              enum: [active, inactive]
+                              example: active
+                            image:
+                              type: string
+                              format: url
+                              example: "https://cdn.com/products/tshirt-red-front.jpg"
+                            link:
+                              type: object
+                              properties:
+                                self:
+                                  type: string
+                                  format: uri
+                                  example: "/products_variant/650f1b2a1c23d7f001234567"
+                                product:
+                                  type: string
+                                  format: uri
+                                  example: "/products/64fa38cce9a2d7f123456789"
+                        - $ref: "#/components/schemas/Timestamp"
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: "/product_variant?page=2&limit=10"
+                      next:
+                        type: string
+                        format: url
+                        example: "/product_variants?page=3&limit=10"
+                      prev:
+                        type: string
+                        format: url
+                        example: "/product_variants?page=1&limit=10"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          "$ref": "#/components/responses/500"
+  "/product_variants/{id}":
+    patch:
+      security:
+        - bearerAuth: []
+      tags: [Product_Variant]
+      description: Partially update an product
+      parameters:
+        - $ref: "#/components/parameters/idPathParam"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                product_id:
+                  type: string
+                  example: "64fa38cce9a2d7f123456789"
+                color:
+                  type: string
+                  example: "Red"
+                size:
+                  type: string
+                  example: "M"
+                status:
+                  type: string
+                  enum:
+                    - active
+                    - inactive
+                  example: active
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        "200":
+          description: Product variant updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "Product variant updated successfully"
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id:
+                            type: string
+                            example: "650f1b2a1c23d7f001234567"
+                          product_id:
+                            type: string
+                            example: "64fa38cce9a2d7f123456789"
+                          color:
+                            type: string
+                            example: "Red"
+                          size:
+                            type: string
+                            example: "M"
+                          status:
+                            type: string
+                            enum: [active, inactive]
+                            example: active
+                          images:
+                            type: array
+                            items:
+                              type: string
+                              format: url
+                              example: "https://cdn.com/products/tshirt-red-front.jpg"
+                      - $ref: "#/components/schemas/Timestamp"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: "/products_variant/650f1b2a1c23d7f001234567"
+                      product:
+                        type: string
+                        format: uri
+                        example: "/products/64fa38cce9a2d7f123456789"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+    delete:
+      security:
+        - bearerAuth: []
+      tags: [Product_Variant]
+      description: Delete a product_variant by id
+      parameters:
+        - $ref: "#/components/parameters/idPathParam"
+      responses:
+        "204":
+          description: "Product_Variant deleted successfully"
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 204
+                  message:
+                    type: string
+                    example: Product_Variant deleted successfully.
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+  "/product_variants/colors":
+    get:
+      tags: [Product_Variant]
+      description: Retrive all published product_variant_color
+      responses:
+        "200":
+          description: Return a list of product_variant_color
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          properties:
+                            id:
+                              type: string
+                              example: 64fa38cce9a2d7f123456789
+                            color:
+                              type: string
+                              example: "Blue"
+                          required: [id, color]
+                        - $ref: "#/components/schemas/Timestamp"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: "/product_variants/colors"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          "$ref": "#/components/responses/500"
+  "/product_variants/sizes":
+    get:
+      tags: [Product_Variant]
+      description: Retrive all published product_variant_size
+      responses:
+        "200":
+          description: Return a list of product_variant_size
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          properties:
+                            id:
+                              type: string
+                              example: 64fa38cce9a2d7f123456789
+                            size:
+                              type: string
+                              example: "L"
+                          required: [id, size]
+                        - $ref: "#/components/schemas/Timestamp"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: "/product_variants/size"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          "$ref": "#/components/responses/500"
+
+  "/reviews":
+    get:
+      security:
+        - bearerAuth: []
+      tags: [Review]
+      description: Retrive all published reviews
+      parameters:
+        - $ref: "#/components/parameters/pageParam"
+        - $ref: "#/components/parameters/limitParam"
+        - $ref: "#/components/parameters/sortTypeParam"
+        - $ref: "#/components/parameters/sortByParam"
+        - $ref: "#/components/parameters/searchParam"
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          properties:
+                            id:
+                              type: string
+                              example: "64fa38cce9a2d7f123456789"
+                            product_id:
+                              type: string
+                              example: "650f1b2a1c23d7f001234567"
+                            title:
+                              type: string
+                              example: "Great T-Shirt!"
+                            rating:
+                              type: integer
+                              example: 5
+                            review:
+                              type: string
+                              example: "Really comfortable and fits perfectly."
+                            user:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                                  example: "64fa38cce9a2d7f001111111"
+                                username:
+                                  type: string
+                                  example: "john_doe"
+                                avatar:
+                                  type: string
+                                  format: url
+                                  example: "https://cdn.com/avatar.jpg"
+                            links:
+                              type: object
+                              properties:
+                                self:
+                                  type: string
+                                  format: uri
+                                  example: "/reviews/64fa38cce9a2d7f123456789"
+                                product:
+                                  type: string
+                                  format: uri
+                                  example: "/products/650f1b2a1c23d7f001234567"
+                                author:
+                                  type: string
+                                  format: uri
+                                  example: "/users/64fa38cce9a2d7f001111111"
+                        - $ref: "#/components/schemas/Timestamp"
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: "/reviews?page=2&limit=10"
+                      next:
+                        type: string
+                        format: url
+                        example: "/reviews?page=3&limit=10"
+                      prev:
+                        type: string
+                        format: url
+                        example: "/reviews?page=1&limit=10"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          "$ref": "#/components/responses/500"
+  "/reviews/{id}":
+    patch:
+      security:
+        - bearerAuth: []
+      tags: [Review]
+      description: Partially update an product
+      parameters:
+        - $ref: "#/components/parameters/idPathParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: "Great T-Shirt!"
+                rating:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                  example: 5
+                review:
+                  type: string
+                  example: "Really comfortable and fits perfectly."
+              required:
+                - title
+                - rating
+                - review
+      responses:
+        200:
+          description: Review updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "Review updated successfully"
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id:
+                            type: string
+                            example: "64fa38cce9a2d7f123456789"
+                          product_id:
+                            type: string
+                            example: "650f1b2a1c23d7f001234567"
+                          user_id:
+                            type: string
+                            example: "64fa38cce9a2d7f001111111"
+                          title:
+                            type: string
+                            example: "Great T-Shirt!"
+                          rating:
+                            type: integer
+                            example: 5
+                          review:
+                            type: string
+                            example: "Really comfortable and fits perfectly."
+                          links:
+                            type: object
+                            properties:
+                              self:
+                                type: string
+                                format: uri
+                                example: "/reviews/64fa38cce9a2d7f123456789"
+                              product:
+                                type: string
+                                format: uri
+                                example: "/products/650f1b2a1c23d7f001234567"
+                              author:
+                                type: string
+                                format: uri
+                                example: "/users/64fa38cce9a2d7f001111111"
+                      - $ref: "#/components/schemas/Timestamp"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+    delete:
+      security:
+        - bearerAuth: []
+      tags: [Review]
+      description: Delete a review by id
+      parameters:
+        - $ref: "#/components/parameters/idPathParam"
+      responses:
+        "204":
+          description: "Review deleted successfully"
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 204
+                  message:
+                    type: string
+                    example: Review deleted successfully.
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+
+  "/coupons":
+    post:
+      operationId: create coupon
+      security:
+        - bearerAuth: []
+      tags: [Coupon]
+      description: Create a new coupon
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                discount_percentage:
+                  type: number
+                  format: float
+                  example: 15
+                coupon_code:
+                  type: string
+                  example: ee495ff
+                min_shopping_amount:
+                  type: number
+                  format: float
+                  example: 500
+                validity:
+                  type: string
+                  format: date
+                  example: "2025-09-10T12:34:56.789Z"
+                status:
+                  type: string
+                  enum: [active, inactive]
+                  example: active
+              required:
+                - discount_percentage
+                - min_shopping_amount
+                - validity
+                - status
+      responses:
+        201:
+          description: Coupon created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 201
+                  message:
+                    type: string
+                    example: "Coupon created successfully"
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id:
+                            type: string
+                            example: "64fa38cce9a2d7f123456789"
+                          discount_percentage:
+                            type: number
+                            format: float
+                            example: 15
+                          coupon_code:
+                            type: string
+                            example: ee495ff
+                          min_shopping_amount:
+                            type: number
+                            format: float
+                            example: 500
+                          validity:
+                            type: string
+                            format: date
+                            example: "2025-09-10T12:34:56.789Z"
+                          status:
+                            type: string
+                            enum: [active, inactive]
+                            example: active
+                      - $ref: "#/components/schemas/Timestamp"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: "/coupons/64fa38cce9a2d7f123456789"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+    get:
+      security:
+        - bearerAuth: []
+      tags: [Coupon]
+      description: Retrive all published coupon
+      parameters:
+        - $ref: "#/components/parameters/pageParam"
+        - $ref: "#/components/parameters/limitParam"
+        - $ref: "#/components/parameters/sortTypeParam"
+        - $ref: "#/components/parameters/sortByParam"
+        - $ref: "#/components/parameters/searchParam"
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          properties:
+                            id:
+                              type: string
+                              example: "64fa38cce9a2d7f123456789"
+                            discount_percentage:
+                              type: number
+                              format: float
+                              example: 15
+                            coupon_code:
+                              type: string
+                              example: ee495ff
+                            min_shopping_amount:
+                              type: number
+                              format: float
+                              example: 500
+                            validity:
+                              type: string
+                              format: date
+                              example: "2025-12-31T00:00:00.000Z"
+                            status:
+                              type: string
+                              enum: [active, inactive]
+                              example: active
+                            link:
+                              type: object
+                              properties:
+                                self:
+                                  type: string
+                                  format: uri
+                                  example: "/coupons/64fa38cce9a2d7f123456789"
+                        - $ref: "#/components/schemas/Timestamp"
+
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: "/coupons?page=2&limit=10"
+                      next:
+                        type: string
+                        format: url
+                        example: "/coupons?page=3&limit=10"
+                      prev:
+                        type: string
+                        format: url
+                        example: "/coupons?page=1&limit=10"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          "$ref": "#/components/responses/500"
+  "/coupons/{id}":
+    patch:
+      operationId: update coupon
+      security:
+        - bearerAuth: []
+      tags: [Coupon]
+      description: Update a new coupon
+      parameters:
+        - $ref: "#/components/parameters/idPathParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                discount_percentage:
+                  type: number
+                  format: float
+                  example: 15
+                coupon_code:
+                  type: string
+                  example: ee495ff
+                min_shopping_amount:
+                  type: number
+                  format: float
+                  example: 500
+                validity:
+                  type: string
+                  format: date
+                  example: "2025-09-10T12:34:56.789Z"
+                status:
+                  type: string
+                  enum: [active, inactive]
+                  example: active
+      responses:
+        200:
+          description: Coupon updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "Coupon created successfully"
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id:
+                            type: string
+                            example: "64fa38cce9a2d7f123456789"
+                          discount_percentage:
+                            type: number
+                            format: float
+                            example: 15
+                          coupon_code:
+                            type: string
+                            example: ee495ff
+                          min_shopping_amount:
+                            type: number
+                            format: float
+                            example: 500
+                          validity:
+                            type: string
+                            format: date
+                            example: "2025-09-10T12:34:56.789Z"
+                          status:
+                            type: string
+                            enum: [active, inactive]
+                            example: active
+                      - $ref: "#/components/schemas/Timestamp"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: "/coupons/64fa38cce9a2d7f123456789"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+    delete:
+      security:
+        - bearerAuth: []
+      tags: [Coupon]
+      description: Delete a coupon by id
+      parameters:
+        - $ref: "#/components/parameters/idPathParam"
+      responses:
+        "204":
+          description: "Coupon deleted successfully"
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 204
+                  message:
+                    type: string
+                    example: Coupon deleted successfully.
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+  "/coupons/varify":
+    post:
+      operationId: varify coupon code
+      security:
+        - bearerAuth: []
+      tags: [Coupon]
+      description: Varify coupon code
+      requestBody:
+        description: To varify coupone  user must need to provide valid coupon code.
+        content:
+          "application/json":
+            schema:
+              type: object
+              properties:
+                coupon_code:
+                  type: string
+                  example: eeff54f
+              required:
+                - coupon_code
+      responses:
+        "200":
+          description: coupon varify successfully.
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: coupon varify successfully.
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id:
+                            type: integer
+                            format: int32
+                            example: 64fa38cce9a2d7f123456789
+                          discount_percentage:
+                            type: integer
+                            example: 20
+                        required: [id, name]
+                      - $ref: "#/components/schemas/Timestamp"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: "/coupons/varify"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+
+  "/media":
+    post:
+      operationId: create media
+      security:
+        - bearerAuth: []
+      tags: [Media]
+      description: Create a new Media
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  description: Array of media files to upload
+              required:
+                - images
+      responses:
+        201:
+          description: Coupon created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 201
+                  message:
+                    type: string
+                    example: "Coupon created successfully"
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id:
+                            type: string
+                            example: "64fa38cce9a2d7f123456789"
+                          url:
+                            type: string
+                            format: url
+                            example: "https://cdn.example.com/media/tshirt-front.jpg"
+                          title:
+                            type: string
+                            example: "Front view of T-Shirt"
+                          alt:
+                            type: string
+                            example: "Red T-Shirt front view"
+                      - $ref: "#/components/schemas/Timestamp"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: "/media/64fa38cce9a2d7f123456789"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+    get:
+      security:
+        - bearerAuth: []
+      tags: [Media]
+      description: Retrive all published coupon
+      parameters:
+        - $ref: "#/components/parameters/pageParam"
+        - $ref: "#/components/parameters/limitParam"
+        - $ref: "#/components/parameters/sortTypeParam"
+        - $ref: "#/components/parameters/sortByParam"
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          properties:
+                            id:
+                              type: string
+                              example: "64fa38cce9a2d7f123456789"
+                            url:
+                              type: string
+                              format: url
+                              example: "https://cdn.example.com/media/tshirt-front.jpg"
+                            title:
+                              type: string
+                              example: "Front view of T-Shirt"
+                            alt:
+                              type: string
+                              example: "Red T-Shirt front view"
+                            link:
+                              type: object
+                              properties:
+                                self:
+                                  type: string
+                                  format: uri
+                                  example: "/media/64fa38cce9a2d7f123456789"
+                        - $ref: "#/components/schemas/Timestamp"
+
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: "/media?page=2&limit=10"
+                      next:
+                        type: string
+                        format: url
+                        example: "/media?page=3&limit=10"
+                      prev:
+                        type: string
+                        format: url
+                        example: "/media?page=1&limit=10"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          "$ref": "#/components/responses/500"
+  "/media/{id}":
+    patch:
+      operationId: update media
+      security:
+        - bearerAuth: []
+      tags: [Media]
+      description: Update media
+      parameters:
+        - $ref: "#/components/parameters/idPathParam"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: "Front view of T-Shirt"
+                alt:
+                  type: string
+                  example: "Red T-Shirt front view"
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  description: Array of media files to upload
+
+      responses:
+        200:
+          description: Coupon updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "Coupon created successfully"
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id:
+                            type: string
+                            example: "64fa38cce9a2d7f123456789"
+                          url:
+                            type: string
+                            format: url
+                            example: "https://cdn.example.com/media/tshirt-front.jpg"
+                          title:
+                            type: string
+                            example: "Front view of T-Shirt"
+                          alt:
+                            type: string
+                            example: "Red T-Shirt front view"
+                      - $ref: "#/components/schemas/Timestamp"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: "/media/64fa38cce9a2d7f123456789"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+    delete:
+      security:
+        - bearerAuth: []
+      tags: [Media]
+      description: Delete a media by id
+      parameters:
+        - $ref: "#/components/parameters/idPathParam"
+      responses:
+        "204":
+          description: "Media deleted successfully"
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 204
+                  message:
+                    type: string
+                    example: Media deleted successfully.
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+
+  "/orders":
+    post:
+      operationId: create new order
+      security:
+        - bearerAuth: []
+      tags: [Order]
+      description: Create a new order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+                  example: "650f1b2a1c23d7f001234567"
+                trans_id:
+                  type: string
+                  example: "TXN123456789"
+                shipping_address_id:
+                  type: string
+                  example: "64fa38cce9a2d7f123456789"
+                products:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      product_id:
+                        type: string
+                        example: "64fa38cce9a2d7f123456780"
+                      variant_id:
+                        type: string
+                        example: "64fa38cce9a2d7f123456781"
+                      qty:
+                        type: integer
+                        format: int32
+                        example: 2
+                pincode:
+                  type: string
+                  example: "1207"
+                total_item:
+                  type: integer
+                  format: int32
+                  example: 3
+                subtotal:
+                  type: number
+                  format: float
+                  example: 1500.00
+                discount:
+                  type: number
+                  format: float
+                  example: 200.00
+                coupon_discount:
+                  type: number
+                  format: float
+                  example: 50.00
+                total_amount:
+                  type: number
+                  format: float
+                  example: 1250.00
+              required:
+                - user_id
+                - shipping_address_id
+                - products
+                - total_item
+                - subtotal
+                - total_amount
+
+      responses:
+        "201":
+          description: Order created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 201
+                  message:
+                    type: string
+                    example: "Order created successfully"
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id:
+                            type: string
+                            example: "650f1b2a1c23d7f001234567"
+                          user_id:
+                            type: string
+                            example: "650f1b2a1c23d7f001234568"
+                          trans_id:
+                            type: string
+                            example: "TXN123456789"
+                          shipping_address_id:
+                            type: string
+                            example: "64fa38cce9a2d7f123456789"
+                          products:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                product_id:
+                                  type: string
+                                  example: "64fa38cce9a2d7f123456780"
+                                variant_id:
+                                  type: string
+                                  example: "64fa38cce9a2d7f123456781"
+                                qty:
+                                  type: integer
+                                  example: 2
+                          pincode:
+                            type: string
+                            example: "1207"
+                          total_item:
+                            type: integer
+                            example: 3
+                          subtotal:
+                            type: number
+                            format: float
+                            example: 1500.00
+                          discount:
+                            type: number
+                            format: float
+                            example: 200.00
+                          coupon_discount:
+                            type: number
+                            format: float
+                            example: 50.00
+                          total_amount:
+                            type: number
+                            format: float
+                            example: 1250.00
+                          status:
+                            type: string
+                            enum:
+                              [
+                                pending,
+                                processing,
+                                shipped,
+                                delivered,
+                                cancelled,
+                              ]
+                            example: pending
+                      - $ref: "#/components/schemas/Timestamp"
+
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: "/orders/64fa38cce9a2d7f123456789"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+    get:
+      security:
+        - bearerAuth: []
+      tags: [Order]
+      description: Retrive all published Order
+      parameters:
+        - $ref: "#/components/parameters/pageParam"
+        - $ref: "#/components/parameters/limitParam"
+        - $ref: "#/components/parameters/sortTypeParam"
+        - $ref: "#/components/parameters/sortByParam"
+        - $ref: "#/components/parameters/searchParam"
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          properties:
+                            id:
+                              type: string
+                              example: "650f1b2a1c23d7f001234567"
+                            user_id:
+                              type: string
+                              example: "650f1b2a1c23d7f001234568"
+                            trans_id:
+                              type: string
+                              example: "TXN123456789"
+                            shipping_address_id:
+                              type: string
+                              example: "64fa38cce9a2d7f123456789"
+                            products:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  product_id:
+                                    type: string
+                                    example: "64fa38cce9a2d7f123456780"
+                                  variant_id:
+                                    type: string
+                                    example: "64fa38cce9a2d7f123456781"
+                                  qty:
+                                    type: integer
+                                    example: 2
+                            pincode:
+                              type: string
+                              example: "1207"
+                            total_item:
+                              type: integer
+                              example: 3
+                            subtotal:
+                              type: number
+                              format: float
+                              example: 1500.00
+                            discount:
+                              type: number
+                              format: float
+                              example: 200.00
+                            coupon_discount:
+                              type: number
+                              format: float
+                              example: 50.00
+                            total_amount:
+                              type: number
+                              format: float
+                              example: 1250.00
+                            status:
+                              type: string
+                              enum:
+                                [
+                                  pending,
+                                  processing,
+                                  shipped,
+                                  delivered,
+                                  cancelled,
+                                ]
+                              example: pending
+                            link:
+                              type: object
+                              properties:
+                                self:
+                                  type: string
+                                  format: uri
+                                  example: "/orders/64fa38cce9a2d7f123456789"
+                                author:
+                                  type: string
+                                  format: uri
+                                  example: "/users/64fa38cce9a2d7f123456789"
+                        - $ref: "#/components/schemas/Timestamp"
+
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: "/orders?page=2&limit=10"
+                      next:
+                        type: string
+                        format: url
+                        example: "/orders?page=3&limit=10"
+                      prev:
+                        type: string
+                        format: url
+                        example: "/orders?page=1&limit=10"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          "$ref": "#/components/responses/500"
+  "/orders/{id}":
+    patch:
+      operationId: update order
+      security:
+        - bearerAuth: []
+      tags: [Order]
+      description: Update order
+      parameters:
+        - $ref: "#/components/parameters/idPathParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [pending, processing, shipped, delivered, cancelled]
+                  example: processing
+              required:
+                - status
+      responses:
+        "200":
+          description: Order updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "Order updated successfully"
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id:
+                            type: string
+                            example: "650f1b2a1c23d7f001234567"
+                          user_id:
+                            type: string
+                            example: "650f1b2a1c23d7f001234568"
+                          trans_id:
+                            type: string
+                            example: "TXN123456789"
+                          shipping_address_id:
+                            type: string
+                            example: "64fa38cce9a2d7f123456789"
+                          products:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                product_id:
+                                  type: string
+                                  example: "64fa38cce9a2d7f123456780"
+                                variant_id:
+                                  type: string
+                                  example: "64fa38cce9a2d7f123456781"
+                                qty:
+                                  type: integer
+                                  example: 2
+                          pincode:
+                            type: string
+                            example: "1207"
+                          total_item:
+                            type: integer
+                            example: 3
+                          subtotal:
+                            type: number
+                            format: float
+                            example: 1500.00
+                          discount:
+                            type: number
+                            format: float
+                            example: 200.00
+                          coupon_discount:
+                            type: number
+                            format: float
+                            example: 50.00
+                          total_amount:
+                            type: number
+                            format: float
+                            example: 1250.00
+                          status:
+                            type: string
+                            enum:
+                              [
+                                pending,
+                                processing,
+                                shipped,
+                                delivered,
+                                cancelled,
+                              ]
+                            example: processing
+                      - $ref: "#/components/schemas/Timestamp"
+
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: "/Order/64fa38cce9a2d7f123456789"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+    delete:
+      security:
+        - bearerAuth: []
+      tags: [Order]
+      description: Delete a order by id
+      parameters:
+        - $ref: "#/components/parameters/idPathParam"
+      responses:
+        "204":
+          description: "Order deleted successfully"
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 204
+                  message:
+                    type: string
+                    example: Order deleted successfully.
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+
+  "/carts":
+    post:
+      operationId: create new cart
+      security:
+        - bearerAuth: []
+      tags: [Cart]
+      description: Create a new cart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product_id:
+                  type: string
+                  example: "64fa38cce9a2d7f123456780"
+                variant_id:
+                  type: string
+                  example: "64fa38cce9a2d7f123456781"
+              required:
+                - product_id
+                - variant_id
+
+      responses:
+        "201":
+          description: Cart item added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 201
+                  message:
+                    type: string
+                    example: "Cart added successfully"
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id:
+                            type: string
+                            example: "650f1b2a1c23d7f001234567"
+                          user_id:
+                            type: string
+                            example: "650f1b2a1c23d7f001234568"
+                          products:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                product_id:
+                                  type: string
+                                  example: "64fa38cce9a2d7f123456780"
+                                variant_id:
+                                  type: string
+                                  example: "64fa38cce9a2d7f123456781"
+                                qty:
+                                  type: integer
+                                  example: 2
+                      - $ref: "#/components/schemas/Timestamp"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: "/cart/64fa38cce9a2d7f123456789"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+  "/carts/{id}":
+    patch:
+      operationId: update order
+      security:
+        - bearerAuth: []
+      tags: [Cart]
+      description: Update order
+      parameters:
+        - $ref: "#/components/parameters/idPathParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                  enum: [increment, decrement]
+                  example: increment
+              required:
+                - action
+
+      responses:
+        "200":
+          description: Cart qty updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "Cart qty updated successfully"
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id:
+                            type: string
+                            example: "650f1b2a1c23d7f001234567"
+                          user_id:
+                            type: string
+                            example: "650f1b2a1c23d7f001234568"
+                          products:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                product_id:
+                                  type: string
+                                  example: "64fa38cce9a2d7f123456780"
+                                variant_id:
+                                  type: string
+                                  example: "64fa38cce9a2d7f123456781"
+                                qty:
+                                  type: integer
+                                  example: 2
+                      - $ref: "#/components/schemas/Timestamp"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: "/cart/64fa38cce9a2d7f123456789"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+    delete:
+      security:
+        - bearerAuth: []
+      tags: [Order]
+      description: Delete a cart by id
+      parameters:
+        - $ref: "#/components/parameters/idPathParam"
+      responses:
+        "204":
+          description: "Cart deleted successfully"
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 204
+                  message:
+                    type: string
+                    example: Cart deleted successfully.
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+
+  "/shipping_addresses":
+    post:
+      operationId: create new shipping_address
+      security:
+        - bearerAuth: []
+      tags: [Shipping_Address]
+      description: Create a new shipping_address
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                full_name:
+                  type: string
+                  example: "John Doe"
+                email:
+                  type: string
+                  format: email
+                  example: "johndoe@example.com"
+                phone:
+                  type: string
+                  example: "+1-202-555-0147"
+                country:
+                  type: string
+                  example: "United States"
+                state:
+                  type: string
+                  example: "California"
+                city:
+                  type: string
+                  example: "Los Angeles"
+              required:
+                - full_name
+                - email
+                - phone
+                - country
+                - state
+                - city
+
+      responses:
+        "201":
+          description: Shipping address created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 201
+                  message:
+                    type: string
+                    example: "Shipping address added successfully"
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id:
+                            type: string
+                            example: "650f1b2a1c23d7f001234567"
+                          user_id:
+                            type: string
+                            example: "650f1b2a1c23d7f001234568"
+                          full_name:
+                            type: string
+                            example: "John Doe"
+                          email:
+                            type: string
+                            format: email
+                            example: "johndoe@example.com"
+                          phone:
+                            type: string
+                            example: "+1-202-555-0147"
+                          country:
+                            type: string
+                            example: "United States"
+                          state:
+                            type: string
+                            example: "California"
+                          city:
+                            type: string
+                            example: "Los Angeles"
+                      - $ref: "#/components/schemas/Timestamp"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: "/shipping_addresses/64fa38cce9a2d7f123456789"
+                      author:
+                        type: string
+                        format: uri
+                        example: "/users/64fa38cce9a2d7f123456789"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+    get:
+      security:
+        - bearerAuth: []
+      tags: [Shipping_Address]
+      description: Retrive all published Order
+      parameters:
+        - $ref: "#/components/parameters/pageParam"
+        - $ref: "#/components/parameters/limitParam"
+        - $ref: "#/components/parameters/sortTypeParam"
+        - $ref: "#/components/parameters/sortByParam"
+      responses:
+        200:
+          description: List of shipping addresses
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "Shipping addresses fetched successfully"
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          properties:
+                            id:
+                              type: string
+                              example: "650f1b2a1c23d7f001234567"
+                            user_id:
+                              type: string
+                              example: "650f1b2a1c23d7f001234568"
+                            full_name:
+                              type: string
+                              example: "John Doe"
+                            email:
+                              type: string
+                              format: email
+                              example: "johndoe@example.com"
+                            phone:
+                              type: string
+                              example: "+1-202-555-0147"
+                            country:
+                              type: string
+                              example: "United States"
+                            state:
+                              type: string
+                              example: "California"
+                            city:
+                              type: string
+                              example: "Los Angeles"
+                            link:
+                              type: object
+                              properties:
+                                self:
+                                  type: string
+                                  format: uri
+                                  example: "/shipping_addresses/650f1b2a1c23d7f001234567"
+                                author:
+                                  type: string
+                                  format: uri
+                                  example: "/users/650f1b2a1c23d7f001234568"
+                        - $ref: "#/components/schemas/Timestamp"
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: "/shipping_addresses?page=2&limit=10"
+                      next:
+                        type: string
+                        format: url
+                        example: "/shipping_addresses?page=3&limit=10"
+                      prev:
+                        type: string
+                        format: url
+                        example: "/shipping_addresses?page=1&limit=10"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          "$ref": "#/components/responses/500"
+  "/shipping_addresses/{id}":
+    patch:
+      operationId: update order
+      security:
+        - bearerAuth: []
+      tags: [Shipping_Address]
+      description: Update order
+      parameters:
+        - $ref: "#/components/parameters/idPathParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                full_name:
+                  type: string
+                  example: "John Doe"
+                email:
+                  type: string
+                  format: email
+                  example: "johndoe@example.com"
+                phone:
+                  type: string
+                  example: "+1-202-555-0147"
+                country:
+                  type: string
+                  example: "United States"
+                state:
+                  type: string
+                  example: "California"
+                city:
+                  type: string
+                  example: "Los Angeles"
+      responses:
+        "200":
+          description: Shipping address created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "Shipping address added successfully"
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id:
+                            type: string
+                            example: "650f1b2a1c23d7f001234567"
+                          user_id:
+                            type: string
+                            example: "650f1b2a1c23d7f001234568"
+                          full_name:
+                            type: string
+                            example: "John Doe"
+                          email:
+                            type: string
+                            format: email
+                            example: "johndoe@example.com"
+                          phone:
+                            type: string
+                            example: "+1-202-555-0147"
+                          country:
+                            type: string
+                            example: "United States"
+                          state:
+                            type: string
+                            example: "California"
+                          city:
+                            type: string
+                            example: "Los Angeles"
+                      - $ref: "#/components/schemas/Timestamp"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: "/shipping_addresses/64fa38cce9a2d7f123456789"
+                      author:
+                        type: string
+                        format: uri
+                        example: "/users/64fa38cce9a2d7f123456789"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+    delete:
+      security:
+        - bearerAuth: []
+      tags: [Shipping_Address]
+      description: Delete a shipping_address by id
+      parameters:
+        - $ref: "#/components/parameters/idPathParam"
+      responses:
+        "204":
+          description: "shipping_address deleted successfully"
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 204
+                  message:
+                    type: string
+                    example: shipping_address deleted successfully.
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+
+  "/users":
+    get:
+      security:
+        - bearerAuth: []
+      tags: [Users]
+      description: Retrive all published Users
+      parameters:
+        - $ref: "#/components/parameters/pageParam"
+        - $ref: "#/components/parameters/limitParam"
+        - $ref: "#/components/parameters/sortTypeParam"
+        - $ref: "#/components/parameters/sortByParam"
+        - $ref: "#/components/parameters/searchParam"
+      responses:
+        "200":
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "User fetched successfully"
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          properties:
+                            id:
+                              type: string
+                              example: "650f1b2a1c23d7f001234567"
+                            username:
+                              type: string
+                              example: "johndoe"
+                            email:
+                              type: string
+                              format: email
+                              example: "johndoe@example.com"
+                            role:
+                              type: string
+                              enum: [admin, user, manager]
+                              example: "user"
+                            profile:
+                              type: object
+                              properties:
+                                full_name:
+                                  type: string
+                                  example: "John Doe"
+                                phone:
+                                  type: string
+                                  example: "+1-202-555-0147"
+                                address:
+                                  type: string
+                                  example: "123 Main Street, Los Angeles, CA"
+                                avatar:
+                                  type: string
+                                  format: url
+                                  example: "https://cdn.example.com/avatars/johndoe.jpg"
+                              required:
+                                - full_name
+                                - phone
+                                - address
+                                - avator
+                            link:
+                              type: object
+                              properties:
+                                self:
+                                  type: string
+                                  format: uri
+                                  example: "/users/650f1b2a1c23d7f001234567"
+                        - $ref: "#/components/schemas/Timestamp"
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: "/users?page=2&limit=10"
+                      next:
+                        type: string
+                        format: url
+                        example: "/users?page=3&limit=10"
+                      prev:
+                        type: string
+                        format: url
+                        example: "/users?page=1&limit=10"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          "$ref": "#/components/responses/500"
+  "/users/names":
+    get:
+      security:
+        - bearerAuth: []
+      tags: [Users]
+      description: Retrive all published User names
+      responses:
+        "200":
+          description: List of user names
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "User names fetched successfully"
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          properties:
+                            id:
+                              type: string
+                              example: "650f1b2a1c23d7f001234567"
+                            username:
+                              type: string
+                              example: "johndoe"
+                        - $ref: "#/components/schemas/Timestamp"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          "$ref": "#/components/responses/500"
+  "/users/{id}":
+    patch:
+      operationId: update user
+      security:
+        - bearerAuth: []
+      tags: [Users]
+      description: Update User
+      parameters:
+        - $ref: "#/components/parameters/idPathParam"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                full_name:
+                  type: string
+                  example: "John Doe"
+                phone:
+                  type: string
+                  example: "+1-202-555-0147"
+                address:
+                  type: string
+                  example: "123 Main Street, Los Angeles, CA"
+                avatar:
+                  type: string
+                  format: binary
+                  description: "Upload avatar image"
+
+      responses:
+        "200":
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "User updated successfully"
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id:
+                            type: string
+                            example: "650f1b2a1c23d7f001234567"
+                          username:
+                            type: string
+                            example: "johndoe"
+                          email:
+                            type: string
+                            format: email
+                            example: "johndoe@example.com"
+                          role:
+                            type: string
+                            enum: [admin, user, manager]
+                            example: "user"
+                          profile:
+                            type: object
+                            properties:
+                              full_name:
+                                type: string
+                                example: "John Doe"
+                              phone:
+                                type: string
+                                example: "+1-202-555-0147"
+                              address:
+                                type: string
+                                example: "123 Main Street, Los Angeles, CA"
+                              avatar:
+                                type: string
+                                format: url
+                                example: "https://cdn.example.com/avatars/johndoe.jpg"
+                            required:
+                              - full_name
+                              - phone
+                              - address
+                              - avatar
+                      - $ref: "#/components/schemas/Timestamp"
+
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: "/users/64fa38cce9a2d7f123456789"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+    delete:
+      security:
+        - bearerAuth: []
+      tags: [Shipping_Address]
+      description: Delete a shipping_address by id
+      parameters:
+        - $ref: "#/components/parameters/idPathParam"
+      responses:
+        "204":
+          description: "shipping_address deleted successfully"
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 204
+                  message:
+                    type: string
+                    example: shipping_address deleted successfully.
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+  "/users/{id}/carts":
+    get:
+      security:
+        - bearerAuth: []
+      tags: [Users]
+      description: Retrive all published Order
+      parameters:
+        - $ref: "#/components/parameters/idPathParam"
+        - $ref: "#/components/parameters/pageParam"
+        - $ref: "#/components/parameters/limitParam"
+        - $ref: "#/components/parameters/sortTypeParam"
+        - $ref: "#/components/parameters/sortByParam"
+      responses:
+        200:
+          description: List of cart items
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "Cart fetched successfully"
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          properties:
+                            id:
+                              type: string
+                              example: "650f1b2a1c23d7f001234567"
+                            user_id:
+                              type: string
+                              example: "650f1b2a1c23d7f001234568"
+                            products:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  product_id:
+                                    type: string
+                                    example: "64fa38cce9a2d7f123456780"
+                                  variant_id:
+                                    type: string
+                                    example: "64fa38cce9a2d7f123456781"
+                                  qty:
+                                    type: integer
+                                    example: 2
+                            link:
+                              type: object
+                              properties:
+                                self:
+                                  type: string
+                                  format: uri
+                                  example: "/carts/650f1b2a1c23d7f001234567"
+                                author:
+                                  type: string
+                                  format: uri
+                                  example: "/users/650f1b2a1c23d7f001234568"
+                        - $ref: "#/components/schemas/Timestamp"
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: "/users/650f1b2a1c23d7f001234567/carts?page=2&limit=10"
+                      next:
+                        type: string
+                        format: url
+                        example: "/users/650f1b2a1c23d7f001234567/carts?page=3&limit=10"
+                      prev:
+                        type: string
+                        format: url
+                        example: "/users/650f1b2a1c23d7f001234567/carts?page=1&limit=10"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          "$ref": "#/components/responses/500"
+  "/users/{id}/orders":
+    get:
+      security:
+        - bearerAuth: []
+      tags: [Users]
+      description: Retrive all published Order
+      parameters:
+        - $ref: "#/components/parameters/idPathParam"
+        - $ref: "#/components/parameters/pageParam"
+        - $ref: "#/components/parameters/limitParam"
+        - $ref: "#/components/parameters/sortTypeParam"
+        - $ref: "#/components/parameters/sortByParam"
+        - $ref: "#/components/parameters/searchParam"
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          properties:
+                            id:
+                              type: string
+                              example: "650f1b2a1c23d7f001234567"
+                            user_id:
+                              type: string
+                              example: "650f1b2a1c23d7f001234568"
+                            trans_id:
+                              type: string
+                              example: "TXN123456789"
+                            shipping_address_id:
+                              type: string
+                              example: "64fa38cce9a2d7f123456789"
+                            products:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  product_id:
+                                    type: string
+                                    example: "64fa38cce9a2d7f123456780"
+                                  variant_id:
+                                    type: string
+                                    example: "64fa38cce9a2d7f123456781"
+                                  qty:
+                                    type: integer
+                                    example: 2
+                            pincode:
+                              type: string
+                              example: "1207"
+                            total_item:
+                              type: integer
+                              example: 3
+                            subtotal:
+                              type: number
+                              format: float
+                              example: 1500.00
+                            discount:
+                              type: number
+                              format: float
+                              example: 200.00
+                            coupon_discount:
+                              type: number
+                              format: float
+                              example: 50.00
+                            total_amount:
+                              type: number
+                              format: float
+                              example: 1250.00
+                            status:
+                              type: string
+                              enum:
+                                [
+                                  pending,
+                                  processing,
+                                  shipped,
+                                  delivered,
+                                  cancelled,
+                                ]
+                              example: pending
+                            link:
+                              type: object
+                              properties:
+                                self:
+                                  type: string
+                                  format: uri
+                                  example: "/users/64fa38cce9a2d7f123456789/orders"
+                                author:
+                                  type: string
+                                  format: uri
+                                  example: "/users/64fa38cce9a2d7f123456789"
+                        - $ref: "#/components/schemas/Timestamp"
+
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: "/users/64fa38cce9a2d7f123456789/orders?page=2&limit=10"
+                      next:
+                        type: string
+                        format: url
+                        example: "/users/64fa38cce9a2d7f123456789/orders?page=3&limit=10"
+                      prev:
+                        type: string
+                        format: url
+                        example: "/users/64fa38cce9a2d7f123456789/orders?page=1&limit=10"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          "$ref": "#/components/responses/500"
+  "/users/{id}/profile":
+    get:
+      operationId: get user by id
+      security:
+        - bearerAuth: []
+      tags: [Users]
+      description: get user by id
+      parameters:
+        - $ref: "#/components/parameters/idPathParam"
+      responses:
+        "200":
+          description: User fetch successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "Fetch user successfully"
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id:
+                            type: string
+                            example: "650f1b2a1c23d7f001234567"
+                          username:
+                            type: string
+                            example: "johndoe"
+                          email:
+                            type: string
+                            format: email
+                            example: "johndoe@example.com"
+                          role:
+                            type: string
+                            enum: [admin, user, manager]
+                            example: "user"
+                          profile:
+                            type: object
+                            properties:
+                              full_name:
+                                type: string
+                                example: "John Doe"
+                              phone:
+                                type: string
+                                example: "+1-202-555-0147"
+                              address:
+                                type: string
+                                example: "123 Main Street, Los Angeles, CA"
+                              avatar:
+                                type: string
+                                format: url
+                                example: "https://cdn.example.com/avatars/johndoe.jpg"
+                            required:
+                              - full_name
+                              - phone
+                              - address
+                              - avatar
+                      - $ref: "#/components/schemas/Timestamp"
+
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: "/users/64fa38cce9a2d7f123456789"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Timestamp:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required: [createdAt, updatedAt]
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+          format: int32
+          example: 2
+        limit:
+          type: integer
+          format: int32
+          example: 10
+        next:
+          type: integer
+          format: int32
+          example: 3
+        prev:
+          type: integer
+          format: int32
+          example: 1
+        totalPage:
+          type: integer
+          format: int32
+          example: 5
+        totalItems:
+          type: integer
+          format: int32
+          example: 50
+      required:
+        - page
+        - limit
+        - totalPage
+        - totalItems
+  responses:
+    "500":
+      description: "Internal Server Error"
+      content:
+        "application/json":
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+                example: 500
+              error:
+                type: string
+                example: Internal Server Error
+              message:
+                type: string
+                example: We are sorry for the inconvenience. Please try again later
+    "400":
+      description: "Bad Request"
+      content:
+        "application/json":
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+                example: 400
+              error:
+                type: string
+                example: Bad Request
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                      example: field name
+                    message:
+                      type: string
+                      example: Invalid field
+                    in:
+                      type: string
+                      enum: [query, body]
+                      example: body
+    "401":
+      description: Unauthorized
+      content:
+        "application/json":
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+                example: 401
+              error:
+                type: string
+                example: Unauthorized
+              message:
+                type: string
+                example: You don't have the right permissions
+    "404":
+      description: Resource Not Found
+      content:
+        "application/json":
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+                example: 404
+              error:
+                type: string
+                example: Not Found
+              message:
+                type: string
+                example: Requested resource not found
+  parameters:
+    pageParam:
+      in: query
+      name: page
+      description: current page number
+      required: true
+      schema:
+        type: integer
+        format: int32
+        example: 2
+    limitParam:
+      in: query
+      name: limit
+      description: maximum items to be returned
+      required: true
+      schema:
+        type: integer
+        format: int32
+        example: 10
+    sortTypeParam:
+      in: query
+      name: sort_type
+      description: type of sort (asc or dsc)
+      schema:
+        type: string
+        enum: [asc, dsc]
+        example: dsc
+    sortByParam:
+      in: query
+      name: sort_by
+      description: Sort key
+      schema:
+        type: string
+        example: updatedAt
+    searchParam:
+      in: query
+      name: search
+      description: Search term
+      schema:
+        type: string
+        example: T-Shirt
+    categoryParam:
+      in: query
+      name: category
+      description: Filter by categories (comma-separated)
+      required: false
+      schema:
+        type: string
+        example: "T-Shirt,Huddies"
+
+    colorParam:
+      in: query
+      name: color
+      description: Filter by colors (comma-separated)
+      required: false
+      schema:
+        type: string
+        example: "Red,Blue"
+
+    sizeParam:
+      in: query
+      name: size
+      description: Filter by sizes (comma-separated)
+      required: false
+      schema:
+        type: string
+        example: "S,M,L"
+
+    minPriceParam:
+      in: query
+      name: minPrice
+      description: Minimum price filter
+      required: false
+      schema:
+        type: number
+        format: float
+        example: 300
+
+    maxPriceParam:
+      in: query
+      name: maxPrice
+      description: Maximum price filter
+      required: false
+      schema:
+        type: number
+        format: float
+        example: 500
+    idPathParam:
+      in: path
+      name: id
+      required: true
+      description: Category ID
+      schema:
+        type: string

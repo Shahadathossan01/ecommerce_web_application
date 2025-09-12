@@ -1,0 +1,23 @@
+import dotenv from "dotenv";
+import http from "http";
+import app from "./app";
+
+import connectDB from "./db";
+dotenv.config();
+const serve = http.createServer(app);
+
+const port = process.env.PORT || 4000;
+
+const main = async () => {
+  try {
+    await connectDB();
+    serve.listen(port, async () => {
+      console.log(`Server is running: ${port}`);
+    });
+  } catch (e) {
+    console.log("Database Error");
+    console.log(e);
+  }
+};
+
+main();
