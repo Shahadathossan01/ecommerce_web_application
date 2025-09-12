@@ -9,6 +9,7 @@ const serve = http.createServer(app);
 const port = process.env.PORT || 4000;
 
 const main = async () => {
+  console.log("auth_branch");
   try {
     await connectDB();
     serve.listen(port, async () => {
