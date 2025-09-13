@@ -5,6 +5,7 @@ import { isCustomError } from "./utils/typeGuards/customError";
 
 const app: Application = express();
 applyMiddleware(app);
+app.get("/favicon.ico", (_req, res) => res.status(204).end());
 app.use(routes);
 
 app.get("/api/v1/health", (_req: Request, res: Response) => {
@@ -14,7 +15,7 @@ app.get("/api/v1/health", (_req: Request, res: Response) => {
   });
 });
 
-app.use((err: unknown, _req: Request, res: Response) => {
+app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
   // Check: throw error("Not Found", 404)
   if (isCustomError(err)) {
     return res.status(err.status).json({ message: err.message });
