@@ -1,0 +1,29 @@
+//TODO -> pagination, errorResponse
+export interface Pagination {
+  page: number;
+  limit: number;
+  next?: string | null;
+  prev?: string | null;
+  totalPage: number;
+  totalItems: number;
+}
+
+export interface Links {
+  self: string;
+  [key: string]: string | undefined | null;
+}
+
+//Used->GET
+export interface GetResponse<T = unknown> {
+  data: T;
+  pagination?: Pagination;
+  links?: Links;
+}
+
+//Used->POST,PATCH,DELETE
+export interface MutateResponse<T = unknown> {
+  code: number;
+  message: string;
+  data?: T;
+  links?: Links;
+}

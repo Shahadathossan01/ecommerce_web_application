@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const registerSchema = z.object({
+const registerSchema = z.object({
   username: z
     .string()
     .min(3, "Username too short")
@@ -15,3 +15,9 @@ export const registerSchema = z.object({
 
   password: z.string().min(6, "Password must be at least 6 characters").trim(),
 });
+
+const authValidations = {
+  registerSchema,
+};
+
+export default authValidations;

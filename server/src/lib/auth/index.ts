@@ -1,11 +1,10 @@
 import error from "@src/utils/error";
 import userService from "../user";
 import { generateHash } from "@src/utils/hashing";
-import { RegisterInput } from "@src/api/v1/auth/types";
-import { IUser } from "@src/types/user";
 import generateOtp from "@src/utils/generateOtp";
+import { IUser, RegisterInput } from "@src/types/auth";
 
-type RegisterResult = {
+type RegisterServiceResult = {
   user: IUser;
   plainOtp: string;
 };
@@ -14,7 +13,7 @@ const register = async ({
   username,
   credential,
   password,
-}: RegisterInput): Promise<RegisterResult> => {
+}: RegisterInput): Promise<RegisterServiceResult> => {
   const isUserExist = await userService.userExist(credential);
 
   if (isUserExist) {

@@ -1,6 +1,5 @@
-import { RegisterInput } from "@src/api/v1/auth/types";
 import User from "@src/model/User";
-import { IUser } from "@src/types/user";
+import { IUser } from "@src/types/auth";
 import error from "@src/utils/error";
 
 const findUserByEmail = async (

@@ -1,5 +1,4 @@
-// src/models/User.ts
-import { IUser } from "@src/types/user";
+import { IUser } from "@src/types/auth";
 import { Schema, model } from "mongoose";
 
 const userSchema = new Schema<IUser>(

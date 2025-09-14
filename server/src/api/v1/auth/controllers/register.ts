@@ -1,12 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import authService from "../../../../lib/auth";
-import { RegisterInput } from "../types";
 import { isError } from "@src/utils/commonTypeGuards";
 import sendVerificationOtp from "@src/utils/sendVerificationOtp";
+import { RegisterInput } from "@src/types/auth";
+import { MutateResponse } from "@src/types/common";
 
 const register = async (
   req: Request<{}, {}, RegisterInput>,
-  res: Response,
+  res: Response<MutateResponse>,
   next: NextFunction
 ) => {
   const { username, credential, password } = req.body;
@@ -18,7 +19,7 @@ const register = async (
       password,
     });
 
-    const response = {
+    const response: MutateResponse = {
       code: 201,
       message:
         "Registration Received. Please check your email to verification OTP.",

@@ -1,4 +1,4 @@
-import { IProfile } from "@src/types/profile";
+import { IProfile } from "@src/types/auth";
 import { Schema, model } from "mongoose";
 
 const profileSchema = new Schema<IProfile>(
