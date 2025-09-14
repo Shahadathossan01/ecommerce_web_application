@@ -17,7 +17,7 @@ const register = async ({
   const isUserExist = await userService.userExist(credential);
 
   if (isUserExist) {
-    throw error("user already exist", 400);
+    throw error(404, "Used another credential", "User already exist");
   }
 
   const countUnverifiedAttempts = await userService.unverifiedAttempts(
@@ -25,7 +25,11 @@ const register = async ({
   );
 
   if (countUnverifiedAttempts.length >= 3) {
-    throw error("Too many attempt. Please wait at least ten minuite!");
+    throw error(
+      400,
+      "Wrong attempt",
+      "Too many attempt. Please wait at least two minuite!"
+    );
   }
 
   const hashedPassword = await generateHash(password);

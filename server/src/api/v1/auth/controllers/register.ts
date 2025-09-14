@@ -19,7 +19,7 @@ const register = async (
       password,
     });
 
-    const response: MutateResponse = {
+    const response = {
       code: 201,
       message:
         "Registration Received. Please check your email to verification OTP.",
@@ -35,11 +35,7 @@ const register = async (
       await sendVerificationOtp({ otp: plainOtp, credential });
     });
   } catch (err: unknown) {
-    if (isError(err)) {
-      next(err);
-    } else {
-      next(new Error("Unknown error"));
-    }
+    next(err);
   }
 };
 

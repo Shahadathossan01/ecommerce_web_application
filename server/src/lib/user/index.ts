@@ -31,7 +31,7 @@ const createUser = async ({
   hashedOtp: string;
 }): Promise<IUser> => {
   if (!username || !credential || !password || !hashedOtp) {
-    throw error("Invalid parameters", 400);
+    throw error(400, "Invalid parameters", "Please provide valid inputs");
   }
 
   const user = new User({ username, credential, password, otp: hashedOtp });
