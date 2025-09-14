@@ -1,10 +1,15 @@
 import { generateHash } from "./hashing";
 
-const generateOtp = async (): Promise<string> => {
-  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+type returnType = {
+  plainOtp: string;
+  hashedOtp: string;
+};
 
-  const hashedOtp = await generateHash(otp);
-  return hashedOtp;
+const generateOtp = async (): Promise<returnType> => {
+  const plainOtp = Math.floor(100000 + Math.random() * 900000).toString();
+
+  const hashedOtp = await generateHash(plainOtp);
+  return { hashedOtp, plainOtp };
 };
 
 export default generateOtp;

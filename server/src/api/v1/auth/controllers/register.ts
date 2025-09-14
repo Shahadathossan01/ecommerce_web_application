@@ -11,7 +11,13 @@ const register = async (
   const { username, credential, password } = req.body;
 
   try {
-    const user = await authService.register({ username, credential, password });
+    const { user, plainOtp } = await authService.register({
+      username,
+      credential,
+      password,
+    });
+
+    console.log(user, plainOtp);
   } catch (err: unknown) {
     if (isError(err)) {
       next(err);

@@ -24,18 +24,18 @@ const createUser = async ({
   username,
   credential,
   password,
-  otp,
+  hashedOtp,
 }: {
   username: string;
   credential: string;
   password: string;
-  otp: string;
+  hashedOtp: string;
 }): Promise<IUser> => {
-  if (!username || !credential || !password || !otp) {
+  if (!username || !credential || !password || !hashedOtp) {
     throw error("Invalid parameters", 400);
   }
 
-  const user = new User({ username, credential, password, otp });
+  const user = new User({ username, credential, password, otp: hashedOtp });
 
   await user.save();
 

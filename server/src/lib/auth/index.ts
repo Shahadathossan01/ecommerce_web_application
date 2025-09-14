@@ -5,11 +5,16 @@ import { RegisterInput } from "@src/api/v1/auth/types";
 import { IUser } from "@src/types/user";
 import generateOtp from "@src/utils/generateOtp";
 
+type RegisterResult = {
+  user: IUser;
+  plainOtp: string;
+};
+
 const register = async ({
   username,
   credential,
   password,
-}: RegisterInput): Promise<IUser> => {
+}: RegisterInput): Promise<RegisterResult> => {
   const isUserExist = await userService.userExist(credential);
 
   if (isUserExist) {
@@ -25,15 +30,15 @@ const register = async ({
   }
 
   const hashedPassword = await generateHash(password);
-  const otp = await generateOtp();
+  const { plainOtp, hashedOtp } = await generateOtp();
   const user = await userService.createUser({
     username,
     credential,
     password: hashedPassword,
-    otp,
+    hashedOtp,
   });
 
-  return user;
+  return { user, plainOtp };
 };
 
 const authService = { register };
