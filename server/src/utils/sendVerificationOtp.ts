@@ -25,3 +25,5 @@ const sendVerificationOtp = async ({ otp, credential }: Inputs) => {
     }
   }
 };
+
+export default sendVerificationOtp;

@@ -1,4 +1,5 @@
 import nodemailer, { Transporter } from "nodemailer";
+import { isError } from "./commonTypeGuards";
 
 type SendEmailParams = {
   credential: string;
@@ -11,22 +12,27 @@ export const sendEmail = async ({
   subject,
   message,
 }: SendEmailParams): Promise<void> => {
-  const transporter: Transporter = nodemailer.createTransport({
-    host: "smtp.ethereal.email",
-    port: 587,
-    secure: false,
-    auth: {
-      user: "hossantopu@gmail.com",
-      pass: "nlfr hkxg xwer bpmg",
-    },
-  });
+  try {
+    const transporter: Transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "hossantopu@gmail.com",
+        pass: "nlfr hkxg xwer bpmg",
+      },
+    });
 
-  const options = {
-    from: "hossantopu@gmail.com",
-    to: credential,
-    subject,
-    html: message,
-  };
+    const options = {
+      from: '"Solid Buy" <hossantopu@gmail.com>',
+      to: credential,
+      subject,
+      html: message,
+    };
 
-  await transporter.sendMail(options);
+    await transporter.sendMail(options);
+  } catch (err) {
+    if (isError(err)) {
+      throw new Error("Sorry failed to send otp. Try again");
+    }
+    throw "ops";
+  }
 };
