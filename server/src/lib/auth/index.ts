@@ -4,7 +4,7 @@ import { generateHash } from "@src/utils/hashing";
 import generateOtp from "@src/utils/generateOtp";
 import { IUser, RegisterInput } from "@src/types/auth";
 
-type RegisterServiceResult = {
+type RegisterServiceResponse = {
   user: IUser;
   plainOtp: string;
 };
@@ -13,7 +13,7 @@ const register = async ({
   username,
   credential,
   password,
-}: RegisterInput): Promise<RegisterServiceResult> => {
+}: RegisterInput): Promise<RegisterServiceResponse> => {
   const isUserExist = await userService.userExist(credential);
 
   if (isUserExist) {
