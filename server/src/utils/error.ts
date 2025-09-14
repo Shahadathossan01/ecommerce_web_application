@@ -1,11 +1,13 @@
-export type CustomError = Error & { status: number };
+export type CustomError = Error & { code: number; error: string };
 
 function error(
-  msg: string = "Something went wrong",
-  status = 500
+  code = 500,
+  error: string,
+  msg: string = "Something went wrong"
 ): CustomError {
   const e = new Error(msg) as CustomError;
-  e.status = status;
+  e.code = code;
+  e.error = error;
   return e;
 }
 
