@@ -1,5 +1,7 @@
 import register from "./register";
+import verifyRegisterOtp from "./verifyRegisterOtp";
+import login from "./login";
 
-const controllers = { register };
+const authControllers = { register, verifyRegisterOtp, login };
 
-export default controllers;
+export default authControllers;

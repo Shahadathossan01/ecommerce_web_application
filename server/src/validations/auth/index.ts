@@ -16,8 +16,28 @@ const registerSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters").trim(),
 });
 
+const verifyRegisterOtpSchema = z.object({
+  credential: z
+    .email("Invalid email format")
+    .trim()
+    .transform((val) => val.toLocaleLowerCase()),
+
+  otp: z.string().min(6, "OTP must be at least 6 characters"),
+});
+
+const loginSchema = z.object({
+  credential: z
+    .email("Invalid email format")
+    .trim() // remove spaces
+    .transform((val) => val.toLowerCase()), // lowercase email
+
+  password: z.string().min(6, "Password must be at least 6 characters").trim(),
+});
+
 const authValidations = {
   registerSchema,
+  verifyRegisterOtpSchema,
+  loginSchema,
 };
 
 export default authValidations;

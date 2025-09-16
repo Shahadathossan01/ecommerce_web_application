@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import authService from "../../../../lib/auth";
-import { isError } from "@src/utils/commonTypeGuards";
 import sendVerificationOtp from "@src/utils/sendVerificationOtp";
 import { RegisterInput } from "@src/types/auth";
 import { MutateResponse } from "@src/types/common";

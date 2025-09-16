@@ -15,7 +15,7 @@ const userSchema = new Schema<IUser>(
     isVerified: { type: Boolean, default: false },
     expiryOtp: {
       type: Date,
-      default: () => new Date(Date.now() + 2 * 60 * 1000),
+      default: () => new Date(Date.now() + 30 * 60 * 1000),
     },
     resetPasswordOTPVerified: { type: Boolean, default: false },
     role: { type: String, enum: ["user", "admin"], default: "user" },

@@ -4,12 +4,16 @@ import { isError } from "./commonTypeGuards";
 import error from "./error";
 
 const removeUnverifiedAccounts = (): ScheduledTask => {
-  return cron.schedule("*/2 * * * *", async (): Promise<void> => {
+  return cron.schedule("*/30 * * * *", async (): Promise<void> => {
     try {
       await User.deleteMany({ isVerified: false });
     } catch (err) {
       if (isError(err)) {
-        throw error("Now remove unverified account!");
+        throw error(
+          500,
+          "[Cron] Failed to remove unverified accounts",
+          "Waiting for next interval"
+        );
       }
       throw "ops";
     }

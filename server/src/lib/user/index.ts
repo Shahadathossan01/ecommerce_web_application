@@ -1,16 +1,14 @@
 import User from "@src/model/User";
 import { IUser } from "@src/types/auth";
 import error from "@src/utils/error";
-
-const findUserByEmail = async (
-  credential: string
-): Promise<IUser | boolean> => {
+import { SortOrder } from "mongoose";
+const findUserByEmail = async (credential: string): Promise<IUser | null> => {
   const user = await User.findOne({ credential, isVerified: true });
-  return user ? user : false;
+  return user ? user : null;
 };
 
 const userExist = async (credential: string): Promise<boolean> => {
-  const user = await findUserByEmail(credential);
+  const user: IUser | null = await findUserByEmail(credential);
   return user ? true : false;
 };
 
@@ -41,11 +39,27 @@ const createUser = async ({
   return user;
 };
 
+const findAllUser = async ({
+  credential,
+  isVerified = true,
+  sortValue,
+}: {
+  credential: string;
+  isVerified: boolean;
+  sortValue: SortOrder;
+}): Promise<IUser[]> => {
+  const user: IUser[] = await User.find({ credential, isVerified }).sort({
+    createdAt: sortValue,
+  });
+  return user;
+};
+
 const userService = {
   findUserByEmail,
   userExist,
   unverifiedAttempts,
   createUser,
+  findAllUser,
 };
 
 export default userService;
