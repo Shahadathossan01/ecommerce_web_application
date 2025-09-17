@@ -9,6 +9,8 @@ const router = Router();
 
 router.post(
   "/categories",
+  authenticate,
+  authorize(["admin"]),
   validate(categoryValidations.categoryCreateSchema),
   categoryControllers.create
 );
