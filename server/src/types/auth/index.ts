@@ -10,8 +10,8 @@ export interface IUser extends Document {
   password: string;
   otp: string;
   isVerified: boolean;
-  expiryOtp?: Date;
-  resetPasswordOTPVerified: boolean;
+  expiryOtp: Date;
+  resetPasswordRequested: boolean;
   role: "user" | "admin";
   profile?: IProfile;
   createdAt: Date;
@@ -34,3 +34,16 @@ export type VerifyRegisterOtpInput = z.infer<
   typeof authValidations.verifyRegisterOtpSchema
 >;
 export type loginInput = z.infer<typeof authValidations.loginSchema>;
+
+export type ResendOtpInput = z.infer<typeof authValidations.resendOtpSchema>;
+
+export type ForgotPasswordInput = z.infer<
+  typeof authValidations.forgotPasswordSchema
+>;
+
+export type VerifyResetOtpInput = z.infer<
+  typeof authValidations.verifyResetOtpSchema
+>;
+export type resetPasswordInput = z.infer<
+  typeof authValidations.resetPasswordSchema
+>;
