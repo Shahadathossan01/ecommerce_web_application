@@ -1,4 +1,6 @@
 import categoryControllers from "@src/api/v1/category";
+import authenticate from "@src/middleware/authenticate";
+import authorize from "@src/middleware/authorize";
 import validate from "@src/middleware/validate";
 import categoryValidations from "@src/validations/category";
 import { Router } from "express";

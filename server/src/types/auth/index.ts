@@ -2,6 +2,7 @@
 import authValidations from "@src/validations/auth";
 import { Document, Types } from "mongoose";
 import { z } from "zod";
+import { Request } from "express";
 
 export interface IUser extends Document {
   _id: Types.ObjectId;
@@ -47,3 +48,7 @@ export type VerifyResetOtpInput = z.infer<
 export type resetPasswordInput = z.infer<
   typeof authValidations.resetPasswordSchema
 >;
+
+export interface AuthenticatedRequest extends Request {
+  user: IUser;
+}
