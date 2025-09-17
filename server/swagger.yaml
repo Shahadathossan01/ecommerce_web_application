@@ -339,7 +339,7 @@ paths:
                   type: string
                   format: email
                   example: hossantopu@gmail.com
-                password:
+                newPassword:
                   type: string
                   format: password
                   example: pass1111

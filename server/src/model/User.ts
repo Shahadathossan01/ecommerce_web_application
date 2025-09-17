@@ -17,7 +17,7 @@ const userSchema = new Schema<IUser>(
       type: Date,
       default: () => new Date(Date.now() + 2 * 60 * 1000),
     },
-    resetPasswordOTPVerified: { type: Boolean, default: false },
+    resetPasswordRequested: { type: Boolean, default: false },
     role: { type: String, enum: ["user", "admin"], default: "user" },
   },
   { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }

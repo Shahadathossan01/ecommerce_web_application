@@ -1,3 +1,3 @@
-import controllers from "./controllers";
+import authControllers from "./controllers";
 
-export default controllers;
+export default authControllers;

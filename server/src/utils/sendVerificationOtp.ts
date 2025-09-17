@@ -19,7 +19,11 @@ const sendVerificationOtp = async ({ otp, credential }: Inputs) => {
       await sendEmail({ credential, subject, message });
     } catch (err) {
       if (isError(err)) {
-        throw error("Sorry to send your otp. Try again");
+        throw error(
+          500,
+          "Internal Server Error",
+          "Sorry, we could not send your OTP. Please try again."
+        );
       }
       throw "ops";
     }
