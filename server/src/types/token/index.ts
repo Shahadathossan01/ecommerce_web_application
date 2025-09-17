@@ -15,3 +15,9 @@ export interface GenerateTokenOptions<T extends object> {
   secret?: Secret;
   expiresIn?: SignOptions["expiresIn"];
 }
+
+export interface VerifyTokenOptions {
+  token: string;
+  algorithm?: Algorithm;
+  secret?: Secret;
+}
