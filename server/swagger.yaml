@@ -641,7 +641,7 @@ paths:
       requestBody:
         required: true
         content:
-          multipart/form-data:
+          "application/json":
             schema:
               type: object
               properties:
@@ -668,7 +668,7 @@ paths:
                   example: "Comfortable cotton T-shirt"
                 image:
                   type: string
-                  format: binary # 👈 indicates file upload
+                  example: https://cdn.com/products/tshirt.jpg
               required:
                 - category_id
                 - name
