@@ -735,7 +735,7 @@ paths:
                       self:
                         type: string
                         format: url
-                        example: "/products"
+                        example: "/products/64fa38cce9a2d7f123456789"
         "400":
           $ref: "#/components/responses/400"
         "401":
@@ -892,7 +892,7 @@ paths:
                   example: active
 
       responses:
-        "201":
+        "200":
           description: Product updated successfully.
           content:
             "application/json":
@@ -902,7 +902,7 @@ paths:
                   code:
                     type: integer
                     format: int32
-                    example: 201
+                    example: 200
                   message:
                     type: string
                     example: Product updated successfully.
@@ -949,7 +949,7 @@ paths:
                       self:
                         type: string
                         format: url
-                        example: "/products"
+                        example: "/products/64fa38cce9a2d7f123456789"
         "400":
           $ref: "#/components/responses/400"
         "401":
