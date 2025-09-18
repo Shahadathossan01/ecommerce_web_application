@@ -24,7 +24,7 @@ export interface MutateResponse<T = unknown> {
   code: number;
   message: string;
   data?: T;
-  links?: Links;
+  links: Links;
 }
 
 export interface FieldError {
