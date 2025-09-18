@@ -23,9 +23,19 @@ router.get(
 
 router.patch(
   "/categories/:id",
-  validate(categoryValidations.updateCategoryParamsSchema, "params"),
+  authenticate,
+  authorize(["admin"]),
+  validate(categoryValidations.categoryParamsSchema, "params"),
   validate(categoryValidations.categoryUpdateSchema),
   categoryControllers.updateItem
+);
+
+router.delete(
+  "/categories/:id",
+  authenticate,
+  authorize(["admin"]),
+  validate(categoryValidations.categoryParamsSchema, "params"),
+  categoryControllers.removeItem
 );
 
 export default router;

@@ -27,7 +27,7 @@ export const getCategoriesQuerySchema = z.object({
   search: z.string().optional().default(""),
 });
 
-export const updateCategoryParamsSchema = z.object({
+export const categoryParamsSchema = z.object({
   id: z.string().refine((val) => mongoose.Types.ObjectId.isValid(val), {
     message: "Invalid MongoDB ObjectId",
   }),
@@ -36,7 +36,7 @@ export const updateCategoryParamsSchema = z.object({
 const categoryValidations = {
   categoryCreateSchema,
   getCategoriesQuerySchema,
-  updateCategoryParamsSchema,
+  categoryParamsSchema,
   categoryUpdateSchema,
 };
 

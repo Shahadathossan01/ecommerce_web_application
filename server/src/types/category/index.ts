@@ -17,8 +17,8 @@ export type CategoryQuery = z.infer<
   typeof categoryValidations.getCategoriesQuerySchema
 >;
 
-export type UpdateCategoryParams = z.infer<
-  typeof categoryValidations.updateCategoryParamsSchema
+export type CategoryParams = z.infer<
+  typeof categoryValidations.categoryParamsSchema
 >;
 
 export type UpdateCategoryBody = z.infer<

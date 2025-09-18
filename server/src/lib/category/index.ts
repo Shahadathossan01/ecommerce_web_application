@@ -4,7 +4,7 @@ import {
   CategoryQuery,
   ICategory,
   UpdateCategoryBody,
-  UpdateCategoryParams,
+  CategoryParams,
 } from "@src/types/category";
 import error from "@src/utils/error";
 
@@ -58,7 +58,7 @@ const count = ({ search = "" }) => {
 const updateItem = async ({
   id,
   name,
-}: UpdateCategoryParams & UpdateCategoryBody): Promise<ICategory> => {
+}: CategoryParams & UpdateCategoryBody): Promise<ICategory> => {
   const category: ICategory | null = await Category.findById(id);
 
   if (!category) {
@@ -76,11 +76,25 @@ const updateItem = async ({
   return category.toObject();
 };
 
+const removeItem = async ({
+  id,
+}: CategoryParams): Promise<ICategory | null> => {
+  const category = await Category.findById({ _id: id });
+  if (!category) {
+    throw error(404, "Not Found", "Category not found");
+  }
+
+  const deleted = await Category.findByIdAndDelete({ _id: id });
+
+  return deleted;
+};
+
 const categoryService = {
   create,
   findAllItems,
   count,
   updateItem,
+  removeItem,
 };
 
 export default categoryService;
