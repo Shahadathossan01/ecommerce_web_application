@@ -25,4 +25,12 @@ router.patch(
   productControllers.updateItem
 );
 
+//TODO -> also delete PRODUCT_VARIANT
+router.delete(
+  "/products/:id",
+  authenticate,
+  authorize(["admin"]),
+  validate(sharedValiations.pathSchema, "params"),
+  productControllers.removeItem
+);
 export default router;

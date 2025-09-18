@@ -66,9 +66,21 @@ const updateItem = async ({
   return product.toObject();
 };
 
+const removeItem = async ({ id }: IPath) => {
+  const product = await Product.findById({ _id: id });
+  if (!product) {
+    throw error(404, "Not Found", "Product not found");
+  }
+
+  //TODO -> Delete also PRODUCT_VARIANT
+  await Product.findByIdAndDelete({ _id: id });
+  return;
+};
+
 const productServices = {
   create,
   updateItem,
+  removeItem,
 };
 
 export default productServices;
