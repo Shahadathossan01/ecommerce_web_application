@@ -24,6 +24,7 @@ const create = async (
 
     res.status(201).json(response);
   } catch (e: unknown) {
+    console.log(e);
     next(e);
   }
 };

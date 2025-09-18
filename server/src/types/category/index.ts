@@ -13,3 +13,14 @@ export interface ICategory extends Document {
 export type CategoryInput = z.infer<
   typeof categoryValidations.categoryCreateSchema
 >;
+export type CategoryQuery = z.infer<
+  typeof categoryValidations.getCategoriesQuerySchema
+>;
+
+export type UpdateCategoryParams = z.infer<
+  typeof categoryValidations.updateCategoryParamsSchema
+>;
+
+export type UpdateCategoryBody = z.infer<
+  typeof categoryValidations.categoryUpdateSchema
+>;

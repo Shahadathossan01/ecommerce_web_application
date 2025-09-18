@@ -3,7 +3,7 @@ import authenticate from "@src/middleware/authenticate";
 import authorize from "@src/middleware/authorize";
 import validate from "@src/middleware/validate";
 import categoryValidations from "@src/validations/category";
-import { Router } from "express";
+import { RequestHandler, Router } from "express";
 
 const router = Router();
 
@@ -13,6 +13,19 @@ router.post(
   authorize(["admin"]),
   validate(categoryValidations.categoryCreateSchema),
   categoryControllers.create
+);
+
+router.get(
+  "/categories",
+  validate(categoryValidations.getCategoriesQuerySchema, "query"),
+  categoryControllers.findAllItems as unknown as RequestHandler
+);
+
+router.patch(
+  "/categories/:id",
+  validate(categoryValidations.updateCategoryParamsSchema, "params"),
+  validate(categoryValidations.categoryUpdateSchema),
+  categoryControllers.updateItem
 );
 
 export default router;

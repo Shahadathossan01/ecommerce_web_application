@@ -1,4 +1,5 @@
 import { GenerateTokenOptions, VerifyTokenOptions } from "@src/types/token";
+import { error } from "console";
 import jwt, { Secret, JwtPayload } from "jsonwebtoken";
 
 const generateToken = <T extends object>({
@@ -27,7 +28,16 @@ const verifyToken = <T = JwtPayload>({
     const decoded = jwt.verify(token, secret, { algorithms: [algorithm] });
     return decoded as T;
   } catch (e) {
-    console.log("[JWT]", e);
+    if (e instanceof jwt.TokenExpiredError) {
+      throw error(401, "Unauthorized", "Token expired. Please log in again");
+    }
+    if (e instanceof jwt.JsonWebTokenError) {
+      throw error(
+        401,
+        "Unauthorized",
+        "Your session has expired. Please log in again"
+      );
+    }
     throw "ops";
   }
 };

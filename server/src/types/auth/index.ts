@@ -50,5 +50,5 @@ export type resetPasswordInput = z.infer<
 >;
 
 export interface AuthenticatedRequest extends Request {
-  user: IUser;
+  user?: IUser;
 }

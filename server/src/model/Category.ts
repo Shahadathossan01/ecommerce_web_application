@@ -5,8 +5,9 @@ const categorySchema = new Schema<ICategory>(
   {
     name: {
       type: String,
-      require: true,
+      required: true,
       trim: true,
+      unique: true,
     },
   },
   { timestamps: true }
