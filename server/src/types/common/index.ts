@@ -1,3 +1,6 @@
+import sharedValiations from "@src/validations/shared";
+import z from "zod";
+
 export interface Pagination {
   page: number;
   limit: number;
@@ -47,3 +50,5 @@ export type IConfig = {
   sort_by: string;
   search: string;
 };
+
+export type IPath = z.infer<typeof sharedValiations.pathSchema>;

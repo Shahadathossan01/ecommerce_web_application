@@ -1,13 +1,13 @@
 import productServices from "@src/lib/product";
-import { MutateResponse } from "@src/types/common";
+import { IPath, MutateResponse } from "@src/types/common";
 import { IProduct, IProductInput } from "@src/types/product";
 import { Request, Response, NextFunction } from "express";
-
-const create = async (
-  req: Request<{}, {}, IProductInput>,
+const updateItem = async (
+  req: Request<IPath, {}, IProductInput>,
   res: Response<MutateResponse<IProduct>>,
   next: NextFunction
 ) => {
+  const { id } = req.params;
   const {
     category_id,
     description,
@@ -20,7 +20,8 @@ const create = async (
   } = req.body;
 
   try {
-    const product = await productServices.create({
+    const product = await productServices.updateItem({
+      id,
       category_id,
       description,
       discount,
@@ -32,18 +33,18 @@ const create = async (
     });
 
     const response = {
-      code: 201,
-      message: "Product created successfully",
+      code: 200,
+      message: "Product updated successfully",
       data: product,
       links: {
         self: `/api/v1/products/${product._id}`,
       },
     };
 
-    res.status(201).json(response);
+    res.status(200).json(response);
   } catch (e: unknown) {
     next(e);
   }
 };
 
-export default create;
+export default updateItem;

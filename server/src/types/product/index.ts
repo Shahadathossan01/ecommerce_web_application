@@ -1,4 +1,4 @@
-import { productCreateSchema } from "@src/validations/product";
+import { productSchema } from "@src/validations/product";
 import { Document, Types } from "mongoose";
 import z from "zod";
 
@@ -16,4 +16,4 @@ export interface IProduct extends Document {
   updatedAt: Date;
 }
 
-export type IProductCreateInput = z.infer<typeof productCreateSchema>;
+export type IProductInput = z.infer<typeof productSchema>;

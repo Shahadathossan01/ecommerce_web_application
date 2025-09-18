@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { z } from "zod";
 
-export const productCreateSchema = z.object({
+export const productSchema = z.object({
   category_id: z
     .string()
     .refine((val) => mongoose.Types.ObjectId.isValid(val), {
@@ -34,7 +34,7 @@ export const productCreateSchema = z.object({
 });
 
 const productValidations = {
-  productCreateSchema,
+  productSchema,
 };
 
 export default productValidations;
