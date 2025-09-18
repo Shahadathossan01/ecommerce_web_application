@@ -1,9 +1,8 @@
-//TODO -> pagination, errorResponse
 export interface Pagination {
   page: number;
   limit: number;
-  next?: string | null;
-  prev?: string | null;
+  next?: number;
+  prev?: number;
   totalPage: number;
   totalItems: number;
 }
@@ -39,3 +38,12 @@ export interface ErrorResponse {
   message?: string;
   data?: FieldError[];
 }
+
+export type IConfig = {
+  page: number;
+  limit: number;
+  totalItems: number;
+  sort_type: string;
+  sort_by: string;
+  search: string;
+};

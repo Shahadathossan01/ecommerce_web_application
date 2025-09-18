@@ -4161,8 +4161,8 @@ components:
       description: type of sort (asc or dsc)
       schema:
         type: string
-        enum: [asc, dsc]
-        example: dsc
+        enum: [asc, desc]
+        example: desc
     sortByParam:
       in: query
       name: sort_by
@@ -4176,7 +4176,6 @@ components:
       description: Search term
       schema:
         type: string
-        example: T-Shirt
     categoryParam:
       in: query
       name: category
