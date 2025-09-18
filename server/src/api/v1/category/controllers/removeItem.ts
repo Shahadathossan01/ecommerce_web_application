@@ -10,17 +10,8 @@ const removeItem = async (
   const { id } = req.params;
 
   try {
-    const deletedCategory = await categoryService.removeItem({ id });
-
-    console.log("deleted", deletedCategory);
-    if (deletedCategory) {
-      const payload = {
-        code: 204,
-        message: "Category deleted successfully!",
-      };
-
-      res.status(204).json(payload);
-    }
+    await categoryService.removeItem({ id });
+    res.status(204).end();
   } catch (e: unknown) {
     next(e);
   }

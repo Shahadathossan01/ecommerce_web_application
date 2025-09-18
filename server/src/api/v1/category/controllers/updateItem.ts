@@ -2,12 +2,12 @@ import categoryService from "@src/lib/category";
 import {
   ICategory,
   UpdateCategoryBody,
-  UpdateCategoryParams,
+  CategoryParams,
 } from "@src/types/category";
 import { GetResponse } from "@src/types/common";
 import { Request, Response, NextFunction } from "express";
 const updateItem = async (
-  req: Request<UpdateCategoryParams, {}, UpdateCategoryBody>,
+  req: Request<CategoryParams, {}, UpdateCategoryBody>,
   res: Response<GetResponse>,
   next: NextFunction
 ) => {

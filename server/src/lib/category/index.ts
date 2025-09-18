@@ -84,9 +84,17 @@ const removeItem = async ({
     throw error(404, "Not Found", "Category not found");
   }
 
-  const deleted = await Category.findByIdAndDelete({ _id: id });
+  return await Category.findByIdAndDelete({ _id: id });
+};
 
-  return deleted;
+const findAllItemNames = async (): Promise<ICategory[]> => {
+  const categories = await Category.find().lean();
+
+  if (categories.length === 0) {
+    throw error(404, "Not Found", "No category created yet!");
+  }
+
+  return categories;
 };
 
 const categoryService = {
@@ -95,6 +103,7 @@ const categoryService = {
   count,
   updateItem,
   removeItem,
+  findAllItemNames,
 };
 
 export default categoryService;

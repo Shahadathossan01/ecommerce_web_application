@@ -38,4 +38,6 @@ router.delete(
   categoryControllers.removeItem
 );
 
+router.get("/categories/names", categoryControllers.findAllItemNames);
+
 export default router;
