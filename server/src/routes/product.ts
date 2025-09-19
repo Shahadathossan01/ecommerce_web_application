@@ -44,4 +44,11 @@ router.post(
   productControllers.createReviewByProductId as RequestHandler
 );
 
+router.get(
+  "/products/:id/reviews",
+  validate(sharedValiations.pathSchema, "params"),
+  validate(sharedValiations.querySchema.omit({ search: true }), "query"),
+  productControllers.findAllReviewsByProductId
+);
+
 export default router;
