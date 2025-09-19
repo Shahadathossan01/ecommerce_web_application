@@ -1,3 +1,8 @@
+import sharedValiations from "@src/validations/shared";
+import { Request } from "express";
+import z from "zod";
+import { IUser } from "../auth";
+
 export interface Pagination {
   page: number;
   limit: number;
@@ -13,8 +18,9 @@ export interface Links {
 }
 
 //Used->GET
-export interface GetResponse<T = unknown> {
+export interface GetResponse<T = unknown, Y = unknown> {
   data: T;
+  meta?: Y;
   pagination?: Pagination;
   links?: Links;
 }
@@ -24,7 +30,7 @@ export interface MutateResponse<T = unknown> {
   code: number;
   message: string;
   data?: T;
-  links?: Links;
+  links: Links;
 }
 
 export interface FieldError {
@@ -47,3 +53,5 @@ export type IConfig = {
   sort_by: string;
   search: string;
 };
+
+export type IPath = z.infer<typeof sharedValiations.pathSchema>;

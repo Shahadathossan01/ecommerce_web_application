@@ -735,7 +735,7 @@ paths:
                       self:
                         type: string
                         format: url
-                        example: "/products"
+                        example: "/products/64fa38cce9a2d7f123456789"
         "400":
           $ref: "#/components/responses/400"
         "401":
@@ -856,7 +856,7 @@ paths:
       requestBody:
         required: true
         content:
-          multipart/form-data:
+          application/json:
             schema:
               type: object
               properties:
@@ -892,7 +892,7 @@ paths:
                   example: active
 
       responses:
-        "201":
+        "200":
           description: Product updated successfully.
           content:
             "application/json":
@@ -902,7 +902,7 @@ paths:
                   code:
                     type: integer
                     format: int32
-                    example: 201
+                    example: 200
                   message:
                     type: string
                     example: Product updated successfully.
@@ -949,7 +949,7 @@ paths:
                       self:
                         type: string
                         format: url
-                        example: "/products"
+                        example: "/products/64fa38cce9a2d7f123456789"
         "400":
           $ref: "#/components/responses/400"
         "401":
@@ -1097,7 +1097,7 @@ paths:
                 title:
                   type: string
                   example: "Great T-Shirt!"
-                rating:
+                ratting:
                   type: integer
                   minimum: 1
                   maximum: 5
@@ -1107,7 +1107,7 @@ paths:
                   example: "Really comfortable and fits perfectly."
               required:
                 - title
-                - rating
+                - ratting
                 - review
 
       responses:
@@ -1146,19 +1146,18 @@ paths:
                           review:
                             type: string
                             example: "Really comfortable and fits perfectly."
-                          links:
-                            type: object
-                            properties:
-                              self:
-                                type: string
-                                format: uri
-                                example: "/reviews/64fa38cce9a2d7f123456789"
-                              product:
-                                type: string
-                                format: uri
-                                example: "/products/650f1b2a1c23d7f001234567"
                       - $ref: "#/components/schemas/Timestamp"
-
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: "/reviews/64fa38cce9a2d7f123456789"
+                      product:
+                        type: string
+                        format: uri
+                        example: "/products/650f1b2a1c23d7f001234567"
         "400":
           $ref: "#/components/responses/400"
         "401":

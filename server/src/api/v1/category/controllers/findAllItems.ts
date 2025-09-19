@@ -28,7 +28,13 @@ const findAllItems = async (
     const data = query.getTransformedItems({
       items: categories,
       selection: ["_id", "name", "createdAt", "updatedAt"],
-      path: "/articles",
+      links: [
+        {
+          path: "/api/v1/categories",
+          key: "self",
+          property: "_id",
+        },
+      ],
     });
 
     const totalItems = await categoryService.count({ search });
