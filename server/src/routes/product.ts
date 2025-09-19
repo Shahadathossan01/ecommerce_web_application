@@ -48,7 +48,7 @@ router.get(
   "/products/:id/reviews",
   validate(sharedValiations.pathSchema, "params"),
   validate(sharedValiations.querySchema.omit({ search: true }), "query"),
-  productControllers.findAllReviewsByProductId
+  productControllers.findAllReviewsByProductId as unknown as RequestHandler
 );
 
 export default router;

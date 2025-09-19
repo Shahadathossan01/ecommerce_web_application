@@ -4,19 +4,18 @@ import defaults from "../../src/config/defaults";
 import { Pagination } from "@src/types/common";
 import generateQueryString from "./qs";
 
+interface LinkConfig {
+  path: string;
+  key: string;
+  property: string;
+}
+
 type GetTransformedItems = {
-  items: ICategory[];
+  items: object[];
   selection: string[];
   path?: string;
+  links?: LinkConfig[];
 };
-type FullCategoryWithLink = ICategory & { link: string };
-
-type PartialCategoryWithLink = Record<string, unknown> & { link: string };
-
-type ResponseTransformedItems = (
-  | FullCategoryWithLink
-  | PartialCategoryWithLink
-)[];
 
 type IGetPagination = {
   totalItems: number;
@@ -33,23 +32,20 @@ type HATEOASLinks = {
 const getTransformedItems = ({
   items = [],
   selection = [],
-  path = "/",
-}: GetTransformedItems): ResponseTransformedItems => {
+  links = [],
+}: GetTransformedItems) => {
   if (!Array.isArray(items) || !Array.isArray(selection)) {
     throw error(400, "Invalid selection", "Provide valid parameters");
   }
 
-  if (selection.length === 0) {
-    return items.map((item) => ({
-      ...item,
-      link: `${path}/${item._id}`,
-    }));
-  }
-
   return items.map((item) => {
-    const result: PartialCategoryWithLink = { link: `${path}/${item._id}` };
+    const result: any = {};
     selection.forEach((key) => {
-      result[key] = (item as any)[key];
+      (result as any)[key] = (item as any)[key];
+    });
+    result.links = {};
+    links.forEach(({ path, key, property }) => {
+      result.links[key] = `${path}/${(item as any)[property]}`;
     });
     return result;
   });

@@ -1,6 +1,6 @@
 import { IUser } from "@src/types/auth";
 import { Schema, model } from "mongoose";
-
+import "./Profile";
 const userSchema = new Schema<IUser>(
   {
     username: { type: String, required: true, trim: true },

@@ -1,4 +1,5 @@
 import reviewValidations from "@src/validations/review";
+import sharedValiations from "@src/validations/shared";
 import { Document, Types } from "mongoose";
 import z from "zod";
 
@@ -14,3 +15,7 @@ export interface IReview extends Document {
 }
 
 export type IReviewInput = z.infer<typeof reviewValidations.reviewSchema>;
+
+const reviewQuerySchema = sharedValiations.querySchema.omit({ search: true });
+
+export type IReviewQuery = z.infer<typeof reviewQuerySchema>;

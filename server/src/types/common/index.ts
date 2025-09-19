@@ -18,8 +18,9 @@ export interface Links {
 }
 
 //Used->GET
-export interface GetResponse<T = unknown> {
+export interface GetResponse<T = unknown, Y = unknown> {
   data: T;
+  meta?: Y;
   pagination?: Pagination;
   links?: Links;
 }
@@ -54,12 +55,3 @@ export type IConfig = {
 };
 
 export type IPath = z.infer<typeof sharedValiations.pathSchema>;
-
-export interface AuthenticatedRequest<
-  P = any,
-  ResBody = any,
-  ReqBody = any,
-  ReqQuery = any
-> extends Request<P, ResBody, ReqBody, ReqQuery> {
-  user: IUser;
-}
