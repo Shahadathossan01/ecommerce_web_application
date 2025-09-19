@@ -1,5 +1,7 @@
 import sharedValiations from "@src/validations/shared";
+import { Request } from "express";
 import z from "zod";
+import { IUser } from "../auth";
 
 export interface Pagination {
   page: number;
@@ -52,3 +54,12 @@ export type IConfig = {
 };
 
 export type IPath = z.infer<typeof sharedValiations.pathSchema>;
+
+export interface AuthenticatedRequest<
+  P = any,
+  ResBody = any,
+  ReqBody = any,
+  ReqQuery = any
+> extends Request<P, ResBody, ReqBody, ReqQuery> {
+  user: IUser;
+}

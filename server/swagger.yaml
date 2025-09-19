@@ -1097,7 +1097,7 @@ paths:
                 title:
                   type: string
                   example: "Great T-Shirt!"
-                rating:
+                ratting:
                   type: integer
                   minimum: 1
                   maximum: 5
@@ -1107,7 +1107,7 @@ paths:
                   example: "Really comfortable and fits perfectly."
               required:
                 - title
-                - rating
+                - ratting
                 - review
 
       responses:
@@ -1146,19 +1146,18 @@ paths:
                           review:
                             type: string
                             example: "Really comfortable and fits perfectly."
-                          links:
-                            type: object
-                            properties:
-                              self:
-                                type: string
-                                format: uri
-                                example: "/reviews/64fa38cce9a2d7f123456789"
-                              product:
-                                type: string
-                                format: uri
-                                example: "/products/650f1b2a1c23d7f001234567"
                       - $ref: "#/components/schemas/Timestamp"
-
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: "/reviews/64fa38cce9a2d7f123456789"
+                      product:
+                        type: string
+                        format: uri
+                        example: "/products/650f1b2a1c23d7f001234567"
         "400":
           $ref: "#/components/responses/400"
         "401":
