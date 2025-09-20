@@ -52,6 +52,11 @@ export type IConfig = {
   sort_type: string;
   sort_by: string;
   search: string;
+  color: string;
+  size: string;
+  status: string;
 };
 
 export type IPath = z.infer<typeof sharedValiations.pathSchema>;
+
+export type IQuery = z.infer<typeof sharedValiations.querySchema>;

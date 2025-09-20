@@ -1289,11 +1289,11 @@ paths:
       requestBody:
         required: true
         content:
-          multipart/form-data:
+          application/json:
             schema:
               type: object
               properties:
-                product_id:
+                product:
                   type: string
                   example: "64fa38cce9a2d7f123456789"
                 color:
@@ -1306,7 +1306,9 @@ paths:
                   type: array
                   items:
                     type: string
-                    format: binary
+                  example:
+                    - "https://res.cloudinary.com/demo/image/upload/v1695200000/tshirt1.png"
+                    - "https://res.cloudinary.com/demo/image/upload/v1695200000/tshirt1.png"
               required:
                 - product_id
                 - color
@@ -1334,7 +1336,7 @@ paths:
                           id:
                             type: string
                             example: "650f1b2a1c23d7f001234567"
-                          product_id:
+                          product:
                             type: string
                             example: "64fa38cce9a2d7f123456789"
                           color:
@@ -1383,7 +1385,9 @@ paths:
         - $ref: "#/components/parameters/limitParam"
         - $ref: "#/components/parameters/sortTypeParam"
         - $ref: "#/components/parameters/sortByParam"
-        - $ref: "#/components/parameters/searchParam"
+        - $ref: "#/components/parameters/colorParam"
+        - $ref: "#/components/parameters/sizeParam"
+        - $ref: "#/components/parameters/statusParam"
       responses:
         200:
           description: Successful Response
@@ -1465,11 +1469,11 @@ paths:
       requestBody:
         required: true
         content:
-          multipart/form-data:
+          application/json:
             schema:
               type: object
               properties:
-                product_id:
+                product:
                   type: string
                   example: "64fa38cce9a2d7f123456789"
                 color:
@@ -1488,7 +1492,9 @@ paths:
                   type: array
                   items:
                     type: string
-                    format: binary
+                  example:
+                    - "https://res.cloudinary.com/demo/image/upload/v1695200000/tshirt1.png"
+                    - "https://res.cloudinary.com/demo/image/upload/v1695200000/tshirt1.png"
       responses:
         "200":
           description: Product variant updated successfully
@@ -4228,3 +4234,13 @@ components:
       description: Category ID
       schema:
         type: string
+    statusParam:
+      in: query
+      name: status
+      description: Filter by status
+      schema:
+        type: string
+        enum:
+          - active
+          - inactive
+        default: active
