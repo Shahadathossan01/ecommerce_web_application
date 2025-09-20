@@ -28,6 +28,9 @@ const createReviewByProductId = async ({
 const count = async ({ id }: IPath) => {
   return await Review.countDocuments({ product_id: id });
 };
+const countAll = async () => {
+  return await Review.countDocuments();
+};
 
 const findAllReviewsByProductId = async ({
   id,
@@ -35,7 +38,10 @@ const findAllReviewsByProductId = async ({
   page,
   sort_by,
   sort_type,
-}: IPath & IReviewQuery): Promise<IReview[]> => {
+}: IPath &
+  Pick<IReviewQuery, "page" | "limit" | "sort_by" | "sort_type">): Promise<
+  IReview[]
+> => {
   const sortStr = `${sort_type === "desc" ? "-" : ""}${sort_by}`;
 
   const reviews = await Review.find({ product_id: id })
@@ -58,10 +64,75 @@ const findAllReviewsByProductId = async ({
 
   return reviews;
 };
+const findAllItems = async ({
+  limit,
+  page,
+  sort_by,
+  sort_type,
+  search,
+}: Pick<
+  IReviewQuery,
+  "page" | "limit" | "sort_by" | "sort_type" | "search"
+>): Promise<IReview[]> => {
+  const sortStr = `${sort_type === "desc" ? "-" : ""}${sort_by}`;
+
+  const filter = {
+    title: { $regex: search, $options: "i" },
+  };
+
+  const reviews = await Review.find(filter)
+    .populate({
+      path: "user_id",
+      select: "_id username",
+      populate: {
+        path: "profile",
+        select: "avator",
+      },
+    })
+    .sort(sortStr)
+    .skip(page * limit - limit)
+    .limit(limit)
+    .lean();
+
+  if (reviews.length === 0) {
+    throw error(404, "Not Found", "Reviews not found");
+  }
+
+  return reviews;
+};
+
+const updateItem = async ({
+  id,
+  ratting,
+  review,
+  title,
+}: IReviewInput & IPath) => {
+  const existingreview = await Review.findById({ _id: id });
+
+  if (!existingreview) {
+    throw error(404, "Not Found", "Review not found");
+  }
+
+  const payload = {
+    ratting,
+    title,
+    review,
+  };
+
+  Object.assign(existingreview, payload);
+
+  await existingreview.save();
+
+  return existingreview.toObject();
+};
+
 const reviewServices = {
   createReviewByProductId,
   findAllReviewsByProductId,
   count,
+  findAllItems,
+  countAll,
+  updateItem,
 };
 
 export default reviewServices;

@@ -1774,7 +1774,7 @@ paths:
                 title:
                   type: string
                   example: "Great T-Shirt!"
-                rating:
+                ratting:
                   type: integer
                   minimum: 1
                   maximum: 5
@@ -1816,7 +1816,7 @@ paths:
                           title:
                             type: string
                             example: "Great T-Shirt!"
-                          rating:
+                          ratting:
                             type: integer
                             example: 5
                           review:
