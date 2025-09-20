@@ -1898,7 +1898,7 @@ paths:
                   example: 15
                 coupon_code:
                   type: string
-                  example: ee495ff
+                  example: 1234
                 min_shopping_amount:
                   type: number
                   format: float
