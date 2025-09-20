@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { z } from "zod";
 
 const productVariantSchema = z.object({
-  product_id: z.string().refine((val) => mongoose.Types.ObjectId.isValid(val), {
+  product: z.string().refine((val) => mongoose.Types.ObjectId.isValid(val), {
     message: "Invalid MongoDB ObjectId",
   }),
   color: z.string().min(1, { message: "Color is required" }),

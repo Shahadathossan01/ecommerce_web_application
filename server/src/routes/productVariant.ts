@@ -38,4 +38,29 @@ router.get(
   productVariantControllers.findAllItems as unknown as any
 );
 
+router.patch(
+  "/product_variants/:id",
+  authenticate,
+  authorize(["admin"]),
+  validate(productVariantValidations.productVariantSchema),
+  productVariantControllers.updateItem
+);
+
+router.delete(
+  "/product_variants/:id",
+  authenticate,
+  authorize(["admin"]),
+  validate(sharedValiations.pathSchema, "params"),
+  productVariantControllers.removeItem
+);
+
+router.get(
+  "/product_variants/colors",
+  productVariantControllers.findAllProductVariantColors
+);
+router.get(
+  "/product_variants/sizes",
+  productVariantControllers.findAllProductVariantSizes
+);
+
 export default router;

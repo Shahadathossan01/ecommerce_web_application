@@ -1,5 +1,5 @@
 import ProductVariant from "@src/model/ProductVariant";
-import { IQuery } from "@src/types/common";
+import { IPath, IQuery } from "@src/types/common";
 import {
   IProductVariant,
   ProductVariantInput,
@@ -9,11 +9,11 @@ import error from "@src/utils/error";
 const create = async ({
   color,
   images,
-  product_id,
+  product,
   size,
 }: ProductVariantInput): Promise<IProductVariant> => {
   const existingProductVariant = await ProductVariant.find({
-    product: product_id,
+    product,
   }).lean();
 
   if (
@@ -29,7 +29,7 @@ const create = async ({
   const productVariant = new ProductVariant({
     color: color.toUpperCase(),
     images,
-    product: product_id,
+    product,
     size: size.toUpperCase(),
   });
 
@@ -84,10 +84,95 @@ const count = async ({
 
   return await ProductVariant.countDocuments(filter);
 };
+
+const updateItem = async ({
+  color,
+  images,
+  product,
+  size,
+  id,
+}: ProductVariantInput & IPath) => {
+  const productVariant = await ProductVariant.findById({ _id: id });
+
+  if (!productVariant) {
+    throw error(404, "Not Found", "Product variant not found");
+  }
+
+  const productId = product ?? productVariant._id;
+  const newColor = (color ?? productVariant.color).toUpperCase();
+  const newSize = (size ?? productVariant.size).toUpperCase();
+
+  const existingProductVariant = await ProductVariant.find({
+    product: productId,
+  }).lean();
+
+  if (
+    existingProductVariant.some(
+      (variant) =>
+        variant.color === newColor.toUpperCase() &&
+        variant.size === newSize.toUpperCase()
+    )
+  ) {
+    throw error(400, "Bad Request", "Color and size already used");
+  }
+
+  const payload = {
+    color: color.toUpperCase(),
+    images,
+    product,
+    size: size.toUpperCase(),
+  };
+
+  Object.assign(productVariant, payload);
+  await productVariant.save();
+
+  return productVariant.toObject();
+};
+
+const removeItem = async ({ id }: IPath) => {
+  const productVariant = await ProductVariant.findById({ _id: id });
+
+  if (!productVariant) {
+    throw error(404, "Not Found", "Product variant not found");
+  }
+
+  return await ProductVariant.findOneAndDelete({ _id: id });
+};
+
+const findAllProductVariantColors = async (): Promise<string[]> => {
+  const productVariants: IProductVariant[] = await ProductVariant.find().lean();
+
+  const productVariantColors = productVariants.reduce((acc: string[], cur) => {
+    if (!acc.includes(cur.color)) {
+      acc.push(cur.color);
+    }
+    return acc;
+  }, [] as string[]);
+
+  return productVariantColors;
+};
+const findAllProductVariantSizes = async (): Promise<string[]> => {
+  const productVariants: IProductVariant[] = await ProductVariant.find().lean();
+
+  const productVariantSizes = productVariants.reduce((acc: string[], cur) => {
+    if (!acc.includes(cur.size)) {
+      acc.push(cur.size);
+    }
+    return acc;
+  }, [] as string[]);
+
+  console.log("called", productVariantSizes);
+  return productVariantSizes;
+};
+
 const productVariantServices = {
   create,
   findAllItems,
   count,
+  updateItem,
+  removeItem,
+  findAllProductVariantColors,
+  findAllProductVariantSizes,
 };
 
 export default productVariantServices;

@@ -1,35 +1,39 @@
 import productVariantServices from "@src/lib/productVariant";
-import { MutateResponse } from "@src/types/common";
+import { IPath, MutateResponse } from "@src/types/common";
 import { ProductVariantInput } from "@src/types/product_variant";
 import { Request, Response, NextFunction } from "express";
-const create = async (
-  req: Request<{}, {}, ProductVariantInput>,
+
+const updateItem = async (
+  req: Request<IPath, {}, ProductVariantInput>,
   res: Response<MutateResponse>,
   next: NextFunction
 ) => {
+  const { id } = req.params;
   const { color, images, product, size } = req.body;
+
   try {
-    const productVariant = await productVariantServices.create({
+    const productVariant = await productVariantServices.updateItem({
       color,
+      id,
       images,
       product,
       size,
     });
 
     const response = {
-      code: 201,
-      message: "Product variant created successfully",
+      code: 200,
+      message: "Product variant updated successfully",
       data: productVariant,
       links: {
         self: `/api/v1/product_variants/${productVariant._id}`,
-        product: `/api/v1/products/${productVariant.product}`,
+        product: `/api/v1/product/${productVariant.product}`,
       },
     };
 
-    res.status(201).json(response);
+    res.status(200).json(response);
   } catch (e: unknown) {
     next(e);
   }
 };
 
-export default create;
+export default updateItem;

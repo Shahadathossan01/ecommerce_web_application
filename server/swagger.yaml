@@ -1293,7 +1293,7 @@ paths:
             schema:
               type: object
               properties:
-                product_id:
+                product:
                   type: string
                   example: "64fa38cce9a2d7f123456789"
                 color:
@@ -1336,7 +1336,7 @@ paths:
                           id:
                             type: string
                             example: "650f1b2a1c23d7f001234567"
-                          product_id:
+                          product:
                             type: string
                             example: "64fa38cce9a2d7f123456789"
                           color:
@@ -1469,11 +1469,11 @@ paths:
       requestBody:
         required: true
         content:
-          multipart/form-data:
+          application/json:
             schema:
               type: object
               properties:
-                product_id:
+                product:
                   type: string
                   example: "64fa38cce9a2d7f123456789"
                 color:
@@ -1492,7 +1492,9 @@ paths:
                   type: array
                   items:
                     type: string
-                    format: binary
+                  example:
+                    - "https://res.cloudinary.com/demo/image/upload/v1695200000/tshirt1.png"
+                    - "https://res.cloudinary.com/demo/image/upload/v1695200000/tshirt1.png"
       responses:
         "200":
           description: Product variant updated successfully
