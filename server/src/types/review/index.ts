@@ -16,6 +16,4 @@ export interface IReview extends Document {
 
 export type IReviewInput = z.infer<typeof reviewValidations.reviewSchema>;
 
-const reviewQuerySchema = sharedValiations.querySchema.omit({ search: true });
-
-export type IReviewQuery = z.infer<typeof reviewQuerySchema>;
+export type IReviewQuery = z.infer<typeof sharedValiations.querySchema>;

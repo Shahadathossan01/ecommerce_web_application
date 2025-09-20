@@ -22,7 +22,7 @@ export const querySchema = z.object({
 
   sort_by: z.enum(["updatedAt", "name"]).default("updatedAt"),
 
-  search: z.string({ message: "search query is required" }),
+  search: z.string({ message: "search query is required" }).optional(),
   color: z.string({ message: "color query is required" }),
   size: z.string({ message: "size query is required" }),
   status: z.string({ message: "status query is required" }),
