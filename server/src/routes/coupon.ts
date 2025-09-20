@@ -34,4 +34,13 @@ router.get(
   couponControllers.findAllItems as unknown as any
 );
 
+router.patch(
+  "/coupons/:id",
+  authenticate,
+  authorize(["admin"]),
+  validate(sharedValiations.pathSchema, "params"),
+  validate(couponValidations.couponSchema),
+  couponControllers.updateItem
+);
+
 export default router;

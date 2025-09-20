@@ -1,5 +1,5 @@
 import Coupon from "@src/model/Coupon";
-import { IQuery } from "@src/types/common";
+import { IPath, IQuery } from "@src/types/common";
 import { ICoupon, ICouponInput } from "@src/types/coupon";
 import error from "@src/utils/error";
 
@@ -61,10 +61,43 @@ const count = async (search: string): Promise<number> => {
   return await Coupon.countDocuments(filter);
 };
 
+const updateItem = async ({
+  id,
+  coupon_code,
+  discount_percentage,
+  min_shopping_amount,
+  status,
+  validity,
+}: ICouponInput & IPath): Promise<ICoupon> => {
+  const isExistingCoupon = await Coupon.findOne({ coupon_code });
+  if (isExistingCoupon) {
+    throw error(400, "Bad Request", "Coupon code already used");
+  }
+  const coupon = await Coupon.findById({ _id: id });
+  if (!coupon) {
+    throw error(404, "Not Found", "Coupon not found");
+  }
+
+  const payload = {
+    coupon_code,
+    discount_percentage,
+    min_shopping_amount,
+    status,
+    validity,
+  };
+
+  Object.assign(coupon, payload);
+
+  await coupon.save();
+
+  return coupon.toObject();
+};
+
 const couponServices = {
   create,
   findAllItems,
   count,
+  updateItem,
 };
 
 export default couponServices;
