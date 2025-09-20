@@ -47,7 +47,15 @@ router.post(
 router.get(
   "/products/:id/reviews",
   validate(sharedValiations.pathSchema, "params"),
-  validate(sharedValiations.querySchema.omit({ search: true }), "query"),
+  validate(
+    sharedValiations.querySchema.pick({
+      page: true,
+      limit: true,
+      sort_by: true,
+      sort_type: true,
+    }),
+    "query"
+  ),
   productControllers.findAllReviewsByProductId as unknown as RequestHandler
 );
 

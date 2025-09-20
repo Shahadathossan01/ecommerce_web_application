@@ -1385,7 +1385,9 @@ paths:
         - $ref: "#/components/parameters/limitParam"
         - $ref: "#/components/parameters/sortTypeParam"
         - $ref: "#/components/parameters/sortByParam"
-        - $ref: "#/components/parameters/searchParam"
+        - $ref: "#/components/parameters/colorParam"
+        - $ref: "#/components/parameters/sizeParam"
+        - $ref: "#/components/parameters/statusParam"
       responses:
         200:
           description: Successful Response
@@ -4230,3 +4232,13 @@ components:
       description: Category ID
       schema:
         type: string
+    statusParam:
+      in: query
+      name: status
+      description: Filter by status
+      schema:
+        type: string
+        enum:
+          - active
+          - inactive
+        default: active

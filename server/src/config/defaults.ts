@@ -7,6 +7,9 @@ const config: IConfig = {
   sort_type: "desc",
   sort_by: "updatedAt",
   search: "",
+  color: "",
+  size: "",
+  status: "",
 };
 
 export default config;
