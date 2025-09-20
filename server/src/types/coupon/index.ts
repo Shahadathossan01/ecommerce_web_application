@@ -7,7 +7,7 @@ export interface ICoupon extends Document {
   discount_percentage: number;
   coupon_code: string;
   min_shopping_amount: number;
-  validity: string;
+  validity: Date;
   status: string;
   createdAt: string;
   updatedAt: string;

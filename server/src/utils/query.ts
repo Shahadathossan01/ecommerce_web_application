@@ -58,17 +58,17 @@ const getPagination = ({
 }: IGetPagination): Pagination => {
   const totalPage = Math.ceil(totalItems / limit);
   const pagination: Pagination = {
-    page,
-    limit,
+    page: Number(page),
+    limit: Number(limit),
     totalItems,
     totalPage,
   };
 
   if (page < totalPage) {
-    pagination.next = page + 1;
+    pagination.next = Number(page) + 1;
   }
   if (page > 1) {
-    pagination.prev = page - 1;
+    pagination.prev = Number(page) - 1;
   }
   return pagination;
 };

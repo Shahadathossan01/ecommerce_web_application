@@ -16,6 +16,10 @@ const couponSchema = new Schema<ICoupon>(
       type: Number,
       required: true,
     },
+    validity: {
+      type: Date,
+      required: true,
+    },
     status: {
       type: String,
       enum: ["active", "inActive"],
