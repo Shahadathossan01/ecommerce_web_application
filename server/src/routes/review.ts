@@ -27,9 +27,17 @@ router.get(
 router.patch(
   "/reviews/:id",
   authenticate,
-  authorize(["admin"]),
+  authorize(["user"]),
   validate(sharedValiations.pathSchema, "params"),
   reviewControllers.updateItem
+);
+
+router.delete(
+  "/reviews/:id",
+  authenticate,
+  authorize(["admin", "user"]),
+  validate(sharedValiations.pathSchema, "params"),
+  reviewControllers.removeItem
 );
 
 export default router;

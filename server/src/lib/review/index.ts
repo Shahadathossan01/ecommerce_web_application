@@ -126,6 +126,16 @@ const updateItem = async ({
   return existingreview.toObject();
 };
 
+const removeItem = async ({ id }: IPath) => {
+  const review = await Review.findById({ _id: id });
+
+  if (!review) {
+    throw error(404, "Not Found", "Product variant not found");
+  }
+
+  return await Review.findOneAndDelete({ _id: id });
+};
+
 const reviewServices = {
   createReviewByProductId,
   findAllReviewsByProductId,
@@ -133,6 +143,7 @@ const reviewServices = {
   findAllItems,
   countAll,
   updateItem,
+  removeItem,
 };
 
 export default reviewServices;
